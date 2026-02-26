@@ -1,0 +1,2924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeProfessor — Learn to Code, One Line at a Time</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/monokai.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/nord.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/solarized.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/selection/active-line.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/comment/comment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/indent-fold.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/search.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/search/searchcursor.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/anyword-hint.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/fold/foldgutter.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js"></script>
+<style>
+/* ════════════════════════════════════════
+   DESIGN SYSTEM
+════════════════════════════════════════ */
+:root {
+  --bg:       #0c0e14;
+  --bg2:      #13161f;
+  --bg3:      #1a1e2b;
+  --bg4:      #222737;
+  --bg5:      #2c3347;
+  --accent:   #e05c5c;
+  --blue:     #5b8dee;
+  --green:    #4ecb71;
+  --yellow:   #f0b429;
+  --purple:   #a78bfa;
+  --cyan:     #22d3ee;
+  --text:     #dde1ec;
+  --text2:    #9aa3bb;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --font-ui:  'Plus Jakarta Sans', sans-serif;
+  --font-code:'JetBrains Mono', monospace;
+  --r:        8px;
+  --glow-b:   0 0 30px rgba(91,141,238,0.2);
+  --glow-g:   0 0 30px rgba(78,203,113,0.2);
+}
+body.theme-light {
+  --bg:#f0f4ff; --bg2:#e8edf8; --bg3:#dde4f5; --bg4:#ccd5ee;
+  --text:#1a1f35; --text2:#4a5370; --border:rgba(0,0,0,0.09); --border2:rgba(0,0,0,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{font-size:15px;}
+body{font-family:var(--font-ui);background:var(--bg);color:var(--text);line-height:1.5;overflow:hidden;height:100vh;}
+
+/* ════════════════════════════════════════
+   LANDING PAGE
+════════════════════════════════════════ */
+#landing {
+  position:fixed;inset:0;z-index:500;
+  background:var(--bg);
+  overflow-y:auto;
+  transition:opacity 0.5s,transform 0.5s;
+}
+#landing.hide{opacity:0;transform:scale(0.97);pointer-events:none;}
+
+.land-nav {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:10;
+  background:rgba(12,14,20,0.92);
+  backdrop-filter:blur(20px);
+}
+.land-logo{font-size:1.2rem;font-weight:900;color:var(--accent);letter-spacing:-0.5px;}
+.land-logo span{color:var(--text);}
+.land-nav-links{display:flex;gap:2rem;}
+.land-nav-links a{color:var(--text2);text-decoration:none;font-size:0.85rem;font-weight:600;transition:color 0.2s;}
+.land-nav-links a:hover{color:var(--text);}
+.land-nav-cta{
+  background:var(--accent);color:#fff;border:none;
+  padding:0.55rem 1.4rem;border-radius:6px;
+  font-family:var(--font-ui);font-weight:800;font-size:0.85rem;
+  cursor:pointer;transition:all 0.2s;
+}
+.land-nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(224,92,92,0.4);}
+
+/* HERO */
+.land-hero {
+  min-height:90vh;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;text-align:center;padding:4rem 2rem;
+  position:relative;overflow:hidden;
+}
+.land-hero-bg {
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 40%, rgba(91,141,238,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 60%, rgba(224,92,92,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 50% 80%, rgba(78,203,113,0.05) 0%, transparent 50%);
+}
+.land-hero-grid {
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(91,141,238,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(91,141,238,0.03) 1px,transparent 1px);
+  background-size:50px 50px;
+  mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black,transparent);
+}
+.land-hero-content{position:relative;z-index:2;max-width:800px;}
+.land-tag {
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:rgba(91,141,238,0.1);border:1px solid rgba(91,141,238,0.25);
+  padding:0.35rem 1rem;border-radius:100px;
+  font-size:0.72rem;font-weight:700;color:var(--blue);
+  text-transform:uppercase;letter-spacing:0.1em;margin-bottom:2rem;
+}
+.tag-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.land-h1{
+  font-size:clamp(2.8rem,6vw,5rem);font-weight:900;line-height:1.05;
+  margin-bottom:1.5rem;letter-spacing:-1.5px;
+}
+.land-h1 .hi{color:var(--accent);}
+.land-h1 .h2c{color:var(--blue);}
+.land-desc{font-size:1.1rem;color:var(--text2);max-width:560px;margin:0 auto 2.5rem;line-height:1.75;}
+.land-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-land-primary{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:var(--accent);color:#fff;
+  padding:0.85rem 2rem;border-radius:8px;
+  font-weight:800;font-size:0.95rem;text-decoration:none;
+  border:none;cursor:pointer;font-family:var(--font-ui);
+  transition:all 0.2s;box-shadow:0 0 40px rgba(224,92,92,0.25);
+}
+.btn-land-primary:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(224,92,92,0.4);}
+.btn-land-sec{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:var(--bg3);color:var(--text);
+  padding:0.85rem 2rem;border-radius:8px;
+  font-weight:700;font-size:0.95rem;text-decoration:none;
+  border:1px solid var(--border2);cursor:pointer;font-family:var(--font-ui);
+  transition:all 0.2s;
+}
+.btn-land-sec:hover{background:var(--bg4);border-color:var(--border2);}
+
+/* STATS STRIP */
+.land-stats{
+  display:flex;justify-content:center;gap:0;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--bg2);flex-wrap:wrap;
+}
+.land-stat{
+  padding:1.5rem 3rem;text-align:center;
+  border-right:1px solid var(--border);
+}
+.land-stat:last-child{border-right:none;}
+.land-stat-num{font-size:1.8rem;font-weight:900;color:var(--blue);font-family:var(--font-code);}
+.land-stat-label{font-size:0.75rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.08em;margin-top:0.2rem;}
+
+/* FEATURES */
+.land-features{padding:5rem 3rem;max-width:1200px;margin:0 auto;}
+.land-section-tag{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:0.75rem;}
+.land-section-title{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:900;letter-spacing:-0.5px;margin-bottom:1rem;}
+.land-section-sub{color:var(--text2);font-size:1rem;max-width:500px;margin-bottom:3rem;line-height:1.7;}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;}
+.feat-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.75rem;
+  transition:all 0.25s;
+  position:relative;overflow:hidden;
+}
+.feat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--fc, var(--blue));transform:scaleX(0);
+  transition:transform 0.3s;transform-origin:left;
+}
+.feat-card:hover::before{transform:scaleX(1);}
+.feat-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,0.3);}
+.feat-icon{font-size:2rem;margin-bottom:1rem;display:block;}
+.feat-card h3{font-size:1rem;font-weight:800;margin-bottom:0.5rem;}
+.feat-card p{font-size:0.83rem;color:var(--text2);line-height:1.65;}
+
+/* LANG SHOWCASE */
+.land-langs{padding:4rem 3rem;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.lang-showcase{max-width:1200px;margin:0 auto;}
+.lang-cards{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;}
+.lang-card{
+  flex:1;min-width:200px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+  padding:1.25rem;display:flex;align-items:center;gap:1rem;
+  transition:all 0.2s;cursor:pointer;
+}
+.lang-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.lang-circle{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;flex-shrink:0;
+}
+.lang-card h4{font-size:0.9rem;font-weight:800;}
+.lang-card p{font-size:0.75rem;color:var(--text2);margin-top:0.2rem;}
+
+/* TESTIMONIALS */
+.land-testi{padding:5rem 3rem;max-width:1200px;margin:0 auto;}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:2.5rem;}
+.testi-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem;
+}
+.testi-stars{color:var(--yellow);font-size:0.8rem;margin-bottom:0.75rem;}
+.testi-text{font-size:0.85rem;color:var(--text2);line-height:1.7;margin-bottom:1rem;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:0.75rem;}
+.testi-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;
+}
+.testi-name{font-size:0.82rem;font-weight:700;}
+.testi-role{font-size:0.72rem;color:var(--text2);}
+
+/* LAND FOOTER */
+.land-footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:2rem 3rem;display:flex;
+  align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.land-footer-logo{font-weight:900;color:var(--accent);}
+.land-footer-logo span{color:var(--text2);}
+.land-footer-text{font-size:0.78rem;color:var(--text2);}
+
+/* ════════════════════════════════════════
+   IDE
+════════════════════════════════════════ */
+#ide{
+  display:flex;flex-direction:column;height:100vh;
+  opacity:0;pointer-events:none;transition:opacity 0.4s;
+}
+#ide.show{opacity:1;pointer-events:all;}
+
+/* TOPBAR */
+.topbar{
+  height:52px;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 0.75rem;gap:0.5rem;
+  z-index:50;flex-shrink:0;
+}
+.ide-logo{font-weight:900;font-size:0.95rem;color:var(--accent);white-space:nowrap;padding:0 0.5rem;}
+.ide-logo span{color:var(--text);}
+.tb-div{width:1px;height:20px;background:var(--border);flex-shrink:0;}
+
+.lang-tabs{display:flex;gap:0.2rem;}
+.lang-tab{
+  display:flex;align-items:center;gap:0.4rem;
+  padding:0.3rem 0.75rem;border-radius:6px;
+  border:1px solid transparent;background:none;
+  color:var(--text2);font-family:var(--font-ui);
+  font-size:0.78rem;font-weight:700;cursor:pointer;transition:all 0.15s;
+}
+.lang-tab:hover{background:var(--bg3);}
+.lang-tab.active{background:var(--bg3);border-color:var(--border);color:var(--text);}
+.ldot{width:7px;height:7px;border-radius:50%;}
+
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:0.4rem;}
+
+.ib{
+  width:30px;height:30px;border-radius:6px;
+  border:1px solid var(--border);background:none;
+  color:var(--text2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.85rem;transition:all 0.15s;position:relative;
+}
+.ib:hover{background:var(--bg3);color:var(--text);}
+.ib[data-tooltip]:hover::after{
+  content:attr(data-tooltip);
+  position:absolute;top:calc(100% + 6px);right:0;
+  background:var(--bg4);border:1px solid var(--border);
+  color:var(--text);font-size:0.68rem;font-family:var(--font-ui);
+  white-space:nowrap;padding:0.3rem 0.6rem;border-radius:5px;z-index:100;
+}
+
+.run-btn{
+  display:flex;align-items:center;gap:0.4rem;
+  padding:0.38rem 1rem;border-radius:6px;border:none;
+  background:var(--green);color:#0c0e14;
+  font-family:var(--font-ui);font-weight:800;font-size:0.8rem;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.run-btn:hover{box-shadow:var(--glow-g);transform:translateY(-1px);}
+.run-btn.busy{background:var(--yellow);animation:pulse 0.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.6;}}
+.kbd{
+  background:rgba(0,0,0,0.3);border-radius:3px;
+  padding:0.05rem 0.35rem;font-family:var(--font-code);
+  font-size:0.6rem;
+}
+
+.font-ctrl{display:flex;align-items:center;gap:0.3rem;}
+.font-btn{
+  width:24px;height:24px;border-radius:4px;border:1px solid var(--border);
+  background:none;color:var(--text2);cursor:pointer;font-size:0.75rem;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.font-btn:hover{background:var(--bg3);color:var(--text);}
+#fontSizeDisplay{font-size:0.7rem;color:var(--text2);min-width:24px;text-align:center;font-family:var(--font-code);}
+
+.theme-sel{
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-family:var(--font-ui);
+  font-size:0.75rem;padding:0.3rem 0.55rem;
+  border-radius:6px;cursor:pointer;outline:none;
+}
+
+/* MAIN LAYOUT */
+.ide-main{display:flex;flex:1;overflow:hidden;min-height:0;}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;background:var(--bg2);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+  overflow:hidden;transition:width 0.25s;
+}
+.sidebar.collapsed{width:0;}
+
+.stabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
+.stab{
+  flex:1;padding:0.65rem 0;text-align:center;
+  font-size:0.65rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.06em;color:var(--text2);cursor:pointer;
+  border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;
+  overflow:hidden;
+}
+.stab.active{color:var(--blue);border-bottom-color:var(--blue);}
+.stab:hover{color:var(--text);}
+
+.spanel{display:none;flex:1;overflow-y:auto;flex-direction:column;}
+.spanel.active{display:flex;}
+
+/* Scroll */
+.spanel::-webkit-scrollbar{width:4px;}
+.spanel::-webkit-scrollbar-track{background:transparent;}
+.spanel::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px;}
+
+/* TUTORIALS */
+.tut-search{
+  padding:0.6rem;border-bottom:1px solid var(--border);
+}
+.tut-search input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-family:var(--font-ui);font-size:0.78rem;
+  padding:0.45rem 0.75rem;border-radius:6px;outline:none;
+  transition:border-color 0.2s;
+}
+.tut-search input:focus{border-color:var(--blue);}
+.tut-search input::placeholder{color:var(--text2);}
+
+.tut-list{padding:0.5rem;}
+.tut-group{margin-bottom:0.5rem;}
+.tut-group-hd{
+  font-size:0.62rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text2);
+  padding:0.6rem 0.5rem 0.25rem;
+}
+.tut-item{
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.5rem 0.6rem;border-radius:6px;cursor:pointer;
+  transition:all 0.15s;border:1px solid transparent;margin-bottom:2px;
+}
+.tut-item:hover{background:var(--bg3);}
+.tut-item.active{background:var(--bg3);border-color:var(--border);}
+.tut-item.done .tut-title{color:var(--text2);}
+.tbadge{
+  font-size:0.55rem;font-weight:800;text-transform:uppercase;
+  padding:0.12rem 0.35rem;border-radius:3px;flex-shrink:0;
+}
+.tbadge.e{background:rgba(78,203,113,0.15);color:var(--green);}
+.tbadge.m{background:rgba(240,180,41,0.15);color:var(--yellow);}
+.tbadge.h{background:rgba(224,92,92,0.15);color:var(--accent);}
+.tut-title{font-size:0.78rem;font-weight:600;line-height:1.3;flex:1;}
+.tut-done-icon{font-size:0.7rem;color:var(--green);flex-shrink:0;}
+.tut-progress{
+  padding:0.75rem;border-top:1px solid var(--border);
+  font-size:0.72rem;color:var(--text2);flex-shrink:0;
+}
+.prog-bar{height:4px;background:var(--bg4);border-radius:4px;margin-top:0.35rem;overflow:hidden;}
+.prog-fill{height:100%;background:var(--green);border-radius:4px;transition:width 0.5s;}
+
+/* CHALLENGES */
+.chal-list{padding:0.5rem;display:flex;flex-direction:column;gap:0.4rem;}
+.chal-item{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:0.9rem;cursor:pointer;transition:all 0.2s;
+}
+.chal-item:hover{border-color:var(--border2);transform:translateX(3px);}
+.chal-item.active{border-color:var(--blue);}
+.chal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;}
+.chal-title{font-size:0.82rem;font-weight:700;line-height:1.3;}
+.chal-tags{display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.4rem;}
+.ctag{
+  font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;
+  border-radius:3px;background:rgba(91,141,238,0.15);color:var(--blue);
+}
+.chal-pts{font-size:0.7rem;color:var(--yellow);font-weight:700;}
+.chal-solved{font-size:0.7rem;color:var(--green);}
+
+/* NOTES */
+.notes-area{
+  flex:1;padding:0.75rem;display:flex;flex-direction:column;gap:0.5rem;
+}
+.notes-ta{
+  flex:1;background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-family:var(--font-ui);font-size:0.82rem;
+  padding:0.75rem;border-radius:8px;resize:none;outline:none;
+  line-height:1.7;transition:border-color 0.2s;
+}
+.notes-ta:focus{border-color:var(--blue);}
+.notes-save-btn{
+  background:var(--blue);color:#fff;border:none;
+  padding:0.5rem;border-radius:6px;font-family:var(--font-ui);
+  font-weight:700;font-size:0.78rem;cursor:pointer;
+}
+
+/* COLLAB */
+.collab-area{padding:0.75rem;display:flex;flex-direction:column;gap:0.75rem;}
+.collab-card{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;padding:1rem;
+}
+.collab-card h4{font-size:0.82rem;font-weight:800;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem;}
+.room-inp{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  color:var(--text);font-family:var(--font-code);font-size:0.75rem;
+  padding:0.45rem 0.7rem;border-radius:6px;outline:none;margin-bottom:0.5rem;
+  transition:border-color 0.2s;
+}
+.room-inp:focus{border-color:var(--blue);}
+.room-btn{
+  width:100%;padding:0.45rem;border:none;border-radius:6px;
+  font-family:var(--font-ui);font-weight:700;font-size:0.78rem;
+  cursor:pointer;transition:all 0.15s;margin-bottom:0.35rem;
+}
+.room-btn.cr{background:var(--accent);color:#fff;}
+.room-btn.jo{background:var(--bg4);color:var(--text);border:1px solid var(--border);}
+.room-btn:hover{opacity:0.85;}
+.online-list{display:flex;flex-direction:column;gap:0.4rem;}
+.user-pill{
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.4rem 0.6rem;border-radius:6px;
+  background:var(--bg);border:1px solid var(--border);font-size:0.78rem;
+}
+.udot{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.uyou{margin-left:auto;font-size:0.6rem;color:var(--green);font-weight:700;}
+
+/* SETTINGS */
+.settings-area{padding:0.75rem;display:flex;flex-direction:column;gap:0.75rem;}
+.settings-group{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.9rem;}
+.settings-group h4{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);margin-bottom:0.75rem;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.6rem;}
+.setting-row:last-child{margin-bottom:0;}
+.setting-label{font-size:0.8rem;font-weight:600;}
+.setting-sub{font-size:0.7rem;color:var(--text2);}
+.toggle{
+  width:38px;height:20px;border-radius:10px;
+  background:var(--bg4);border:1px solid var(--border);
+  cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;
+}
+.toggle.on{background:var(--green);}
+.toggle-knob{
+  width:14px;height:14px;border-radius:50%;background:#fff;
+  position:absolute;top:2px;left:2px;transition:left 0.2s;
+}
+.toggle.on .toggle-knob{left:20px;}
+.setting-sel{
+  background:var(--bg);border:1px solid var(--border);color:var(--text);
+  font-family:var(--font-ui);font-size:0.75rem;padding:0.3rem 0.5rem;
+  border-radius:5px;outline:none;
+}
+
+/* EDITOR AREA */
+.editor-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+
+.editor-tabs-bar{
+  display:flex;align-items:center;
+  background:var(--bg3);border-bottom:1px solid var(--border);
+  height:36px;flex-shrink:0;overflow-x:auto;
+}
+.editor-tabs-bar::-webkit-scrollbar{height:0;}
+.etab{
+  display:flex;align-items:center;gap:0.4rem;
+  padding:0 1rem;height:100%;border-right:1px solid var(--border);
+  font-size:0.75rem;font-family:var(--font-code);
+  color:var(--text2);cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:all 0.15s;
+}
+.etab.active{color:var(--text);border-bottom-color:var(--blue);background:var(--bg2);}
+.etab:hover{color:var(--text);}
+.etab-dot{width:6px;height:6px;border-radius:50%;}
+.etab-close{
+  width:14px;height:14px;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.6rem;color:var(--text2);
+  transition:all 0.15s;margin-left:0.2rem;
+}
+.etab-close:hover{background:var(--bg5);color:var(--text);}
+.tab-add{
+  padding:0 0.75rem;height:100%;border:none;background:none;
+  color:var(--text2);cursor:pointer;font-size:1rem;transition:color 0.15s;
+}
+.tab-add:hover{color:var(--text);}
+
+.cm-wrap{flex:1;overflow:hidden;position:relative;}
+.CodeMirror{
+  height:100%!important;
+  font-family:var(--font-code)!important;
+  font-size:14px!important;
+  line-height:1.75!important;
+}
+.CodeMirror-scroll{overflow-y:auto!important;}
+.CodeMirror-foldgutter{width:12px;}
+
+/* AI HINT PANEL */
+.ai-panel{
+  width:260px;background:var(--bg2);border-left:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+  overflow:hidden;transition:width 0.25s;
+}
+.ai-panel.collapsed{width:0;}
+.ai-header{
+  padding:0.75rem 1rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.ai-header h3{
+  font-size:0.78rem;font-weight:800;display:flex;align-items:center;gap:0.4rem;
+}
+.ai-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite;}
+.ai-body{flex:1;overflow-y:auto;padding:0.75rem;display:flex;flex-direction:column;gap:0.75rem;}
+.ai-msg{
+  padding:0.85rem;border-radius:8px;font-size:0.78rem;line-height:1.7;
+}
+.ai-msg.system{background:var(--bg3);border:1px solid var(--border);color:var(--text2);}
+.ai-msg.hint{background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);color:var(--text);}
+.ai-msg.error-hint{background:rgba(224,92,92,0.08);border:1px solid rgba(224,92,92,0.2);color:var(--text);}
+.ai-msg.success{background:rgba(78,203,113,0.08);border:1px solid rgba(78,203,113,0.2);color:var(--text);}
+.ai-msg strong{color:var(--blue);}
+.ai-label{font-size:0.6rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem;}
+.ai-label.hint{color:var(--blue);}
+.ai-label.err{color:var(--accent);}
+.ai-label.ok{color:var(--green);}
+.ai-actions{padding:0.75rem;border-top:1px solid var(--border);display:flex;gap:0.4rem;flex-shrink:0;}
+.ai-btn{
+  flex:1;padding:0.45rem;border:none;border-radius:6px;
+  font-family:var(--font-ui);font-weight:700;font-size:0.72rem;
+  cursor:pointer;transition:all 0.15s;
+}
+.ai-btn.primary{background:var(--blue);color:#fff;}
+.ai-btn.sec{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+.ai-btn:hover{opacity:0.85;}
+
+/* OUTPUT */
+.output-panel{
+  height:200px;background:var(--bg);border-top:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;
+  transition:height 0.25s;
+}
+.output-panel.lg{height:350px;}
+.output-panel.sm{height:120px;}
+
+.output-bar{
+  display:flex;align-items:center;
+  background:var(--bg3);border-bottom:1px solid var(--border);
+  height:34px;flex-shrink:0;padding:0 0.5rem;
+}
+.otab{
+  padding:0 0.85rem;height:34px;display:flex;align-items:center;
+  font-size:0.7rem;font-weight:700;color:var(--text2);cursor:pointer;
+  border-bottom:2px solid transparent;transition:all 0.15s;
+}
+.otab.active{color:var(--text);border-bottom-color:var(--green);}
+.otab:hover{color:var(--text);}
+.obar-right{margin-left:auto;display:flex;gap:0.35rem;align-items:center;}
+.oib{
+  width:26px;height:26px;border-radius:5px;border:1px solid var(--border);
+  background:none;color:var(--text2);cursor:pointer;font-size:0.75rem;
+  display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.oib:hover{background:var(--bg3);color:var(--text);}
+
+.output-body{
+  flex:1;overflow-y:auto;padding:0.6rem 0.9rem;
+  font-family:var(--font-code);font-size:0.78rem;line-height:1.85;
+}
+.output-body::-webkit-scrollbar{width:4px;}
+.output-body::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px;}
+
+.oline{display:flex;gap:0.6rem;align-items:flex-start;}
+.oline.err .otxt{color:var(--accent);}
+.oline.ok .otxt{color:var(--green);}
+.oline.info .otxt{color:var(--blue);}
+.oline.sys .otxt{color:var(--text2);}
+.oline.warn .otxt{color:var(--yellow);}
+.oprompt{color:var(--bg5);user-select:none;flex-shrink:0;font-size:0.7rem;padding-top:0.05rem;}
+.otxt{word-break:break-all;white-space:pre-wrap;}
+
+.stdin-row{
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.45rem 0.9rem;border-top:1px solid var(--border);flex-shrink:0;
+}
+.stdin-label{font-family:var(--font-code);font-size:0.75rem;color:var(--green);flex-shrink:0;}
+.stdin-inp{
+  flex:1;background:none;border:none;outline:none;
+  font-family:var(--font-code);font-size:0.78rem;color:var(--text);
+}
+.stdin-inp::placeholder{color:var(--text2);}
+
+/* STATUS BAR */
+.statusbar{
+  height:22px;background:var(--blue);
+  display:flex;align-items:center;padding:0 1rem;gap:1.5rem;flex-shrink:0;
+}
+.sitem{font-size:0.65rem;font-weight:700;color:rgba(12,14,20,0.75);display:flex;align-items:center;gap:0.3rem;}
+.sitem.right{margin-left:auto;}
+.save-indicator{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);flex-shrink:0;
+}
+.save-indicator.dirty{background:var(--yellow);}
+
+/* CHALLENGE MODAL */
+.modal-ov{
+  position:fixed;inset:0;background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(6px);z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 0.2s;
+}
+.modal-ov.show{opacity:1;pointer-events:all;}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:14px;width:560px;max-width:96vw;
+  max-height:90vh;overflow-y:auto;
+  transform:translateY(16px);transition:transform 0.25s;
+}
+.modal-ov.show .modal{transform:translateY(0);}
+.modal-hd{
+  padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;
+}
+.modal-hd h2{font-size:1.05rem;font-weight:800;line-height:1.3;}
+.modal-close{
+  background:none;border:none;color:var(--text2);font-size:1.1rem;cursor:pointer;
+  flex-shrink:0;padding:0.2rem;transition:color 0.15s;
+}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:1.25rem 1.5rem;}
+.modal-desc{font-size:0.85rem;color:var(--text2);line-height:1.7;margin-bottom:1.25rem;}
+.modal-code{
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;
+  padding:1rem;font-family:var(--font-code);font-size:0.75rem;
+  line-height:1.85;margin-bottom:1.25rem;overflow-x:auto;
+  white-space:pre;
+}
+.modal-tests{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.25rem;}
+.test-row{
+  background:var(--bg3);border:1px solid var(--border);border-radius:7px;
+  padding:0.75rem;display:flex;flex-direction:column;gap:0.3rem;
+}
+.test-row-label{font-size:0.62rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);}
+.test-row code{font-family:var(--font-code);font-size:0.75rem;color:var(--blue);}
+.test-row.pass{border-color:rgba(78,203,113,0.3);}
+.test-row.fail{border-color:rgba(224,92,92,0.3);}
+.modal-ftr{
+  padding:1rem 1.5rem;border-top:1px solid var(--border);
+  display:flex;gap:0.6rem;justify-content:flex-end;
+}
+.mbtn{
+  padding:0.5rem 1.2rem;border-radius:7px;
+  font-family:var(--font-ui);font-weight:800;font-size:0.82rem;
+  cursor:pointer;border:none;transition:all 0.15s;
+}
+.mbtn.p{background:var(--blue);color:#fff;}
+.mbtn.s{background:var(--bg3);color:var(--text);border:1px solid var(--border);}
+.mbtn.g{background:var(--green);color:#0c0e14;}
+.mbtn:hover{opacity:0.85;transform:translateY(-1px);}
+
+/* SHORTCUTS MODAL */
+.shortcuts-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;
+  padding:1rem 1.5rem;
+}
+.sc-row{display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border);}
+.sc-label{font-size:0.82rem;color:var(--text2);}
+.sc-keys{display:flex;gap:0.3rem;}
+.sc-key{
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:4px;padding:0.15rem 0.45rem;
+  font-family:var(--font-code);font-size:0.68rem;color:var(--text);
+}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:1.5rem;right:1.5rem;
+  background:var(--bg3);border:1px solid var(--border2);
+  border-radius:9px;padding:0.7rem 1.1rem;
+  font-size:0.8rem;font-weight:600;
+  display:flex;align-items:center;gap:0.5rem;
+  transform:translateY(80px);opacity:0;
+  transition:all 0.3s;z-index:999;max-width:320px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);
+}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{border-left:3px solid var(--green);}
+.toast.er{border-left:3px solid var(--accent);}
+.toast.inf{border-left:3px solid var(--blue);}
+.toast.wn{border-left:3px solid var(--yellow);}
+
+/* CONFETTI PARTICLE */
+.confetti-particle{
+  position:fixed;width:8px;height:8px;border-radius:2px;
+  pointer-events:none;z-index:998;
+  animation:confettiFall 2s ease-in forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(-20px) rotate(0deg);opacity:1;}
+  100%{transform:translateY(100vh) rotate(720deg);opacity:0;}
+}
+
+/* XP / POINTS BADGE */
+.xp-badge{
+  position:fixed;top:70px;right:20px;
+  background:var(--bg2);border:1px solid var(--yellow);
+  border-radius:8px;padding:0.5rem 0.9rem;
+  font-size:0.78rem;font-weight:700;color:var(--yellow);
+  transform:translateX(120px);opacity:0;
+  transition:all 0.4s;z-index:998;
+}
+.xp-badge.show{transform:translateX(0);opacity:1;}
+
+/* POINTS DISPLAY */
+.pts-display{
+  display:flex;align-items:center;gap:0.3rem;
+  font-family:var(--font-code);font-size:0.75rem;font-weight:700;
+  color:var(--yellow);padding:0.25rem 0.6rem;
+  background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.2);
+  border-radius:20px;
+}
+
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .ai-panel{display:none;}
+  .land-nav-links{display:none;}
+  .lang-tab .ltxt{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     LANDING PAGE
+════════════════════════════════════════ -->
+<div id="landing">
+  <nav class="land-nav">
+    <div class="land-logo">Code<span>Professor</span></div>
+    <div class="land-nav-links">
+      <a href="#features">Features</a>
+      <a href="#languages">Languages</a>
+      <a href="#challenges">Challenges</a>
+      <a href="#">About</a>
+    </div>
+    <button class="land-nav-cta" onclick="launchIDE()">🚀 Open IDE</button>
+  </nav>
+
+  <div class="land-hero">
+    <div class="land-hero-bg"></div>
+    <div class="land-hero-grid"></div>
+    <div class="land-hero-content">
+      <div class="land-tag"><span class="tag-dot"></span> Free · No Login · Always Updated</div>
+      <h1 class="land-h1">
+        The <span class="hi">Smartest</span> Online<br>
+        <span class="h2c">Code Editor</span> for Students
+      </h1>
+      <p class="land-desc">
+        Write, run, and learn Python, C, C++ & Java in your browser. Built by a professor who has trained 3,000+ students — with built-in tutorials, AI hints, live challenges, and real-time collaboration.
+      </p>
+      <div class="land-btns">
+        <button class="btn-land-primary" onclick="launchIDE()">▶ Start Coding Free</button>
+        <button class="btn-land-sec" onclick="launchIDE('tutorials')">📖 Browse Tutorials</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="land-stats">
+    <div class="land-stat"><div class="land-stat-num">4</div><div class="land-stat-label">Languages</div></div>
+    <div class="land-stat"><div class="land-stat-num">25+</div><div class="land-stat-label">Tutorials</div></div>
+    <div class="land-stat"><div class="land-stat-num">15+</div><div class="land-stat-label">Challenges</div></div>
+    <div class="land-stat"><div class="land-stat-num">6</div><div class="land-stat-label">Themes</div></div>
+    <div class="land-stat"><div class="land-stat-num">∞</div><div class="land-stat-label">Free Forever</div></div>
+  </div>
+
+  <div class="land-features" id="features">
+    <div class="land-section-tag">// Why CodeProfessor?</div>
+    <div class="land-section-title">Everything a Student Needs</div>
+    <div class="land-section-sub">Built from scratch to be the editor we always wished existed — clean, fast, and actually educational.</div>
+    <div class="features-grid">
+      <div class="feat-card" style="--fc:var(--green)">
+        <span class="feat-icon">⚡</span>
+        <h3>Live Python Execution</h3>
+        <p>Python 3 runs directly in your browser — no installs, no setup, no waiting. Just write and run instantly.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--blue)">
+        <span class="feat-icon">🤖</span>
+        <h3>AI Hints & Explanations</h3>
+        <p>Stuck? Get intelligent hints that guide you to the solution without giving it away. Learn by thinking.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--yellow)">
+        <span class="feat-icon">🎯</span>
+        <h3>Coding Challenges + XP</h3>
+        <p>15+ challenges with auto-grading, test cases, and an XP points system. Level up as you learn.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--purple)">
+        <span class="feat-icon">📖</span>
+        <h3>25+ Built-in Tutorials</h3>
+        <p>Step-by-step tutorials from Hello World to Decorators — each one loads directly into the editor.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--accent)">
+        <span class="feat-icon">👥</span>
+        <h3>Live Collaboration</h3>
+        <p>Create a room, share the ID, and code together in real-time. Perfect for pair programming and classroom use.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--cyan)">
+        <span class="feat-icon">🎨</span>
+        <h3>6 Beautiful Themes</h3>
+        <p>Dracula, Monokai, Material, Nord, Solarized, and Light mode. Your eyes, your choice.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--green)">
+        <span class="feat-icon">💾</span>
+        <h3>Auto-Save</h3>
+        <p>Your code is automatically saved to your browser. Come back anytime and your work is still there.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--blue)">
+        <span class="feat-icon">⌨️</span>
+        <h3>Pro Keyboard Shortcuts</h3>
+        <p>F5 to run, Ctrl+/ to comment, Ctrl+Z undo, code folding, bracket matching — a real IDE experience.</p>
+      </div>
+      <div class="feat-card" style="--fc:var(--yellow)">
+        <span class="feat-icon">📝</span>
+        <h3>Multi-Tab Editor</h3>
+        <p>Open multiple files in tabs, switch between them, add new ones. Just like VS Code, in your browser.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="land-langs" id="languages">
+    <div class="lang-showcase">
+      <div class="land-section-tag">// Supported Languages</div>
+      <div class="land-section-title">4 Languages, One Editor</div>
+      <div class="lang-cards">
+        <div class="lang-card" onclick="launchIDE('python')">
+          <div class="lang-circle" style="background:rgba(53,114,165,0.15)">🐍</div>
+          <div><h4>Python 3</h4><p>Live execution in browser</p></div>
+        </div>
+        <div class="lang-card" onclick="launchIDE('c')">
+          <div class="lang-circle" style="background:rgba(85,85,85,0.15)">⚙️</div>
+          <div><h4>C</h4><p>Full syntax highlighting + tutorials</p></div>
+        </div>
+        <div class="lang-card" onclick="launchIDE('cpp')">
+          <div class="lang-circle" style="background:rgba(243,75,125,0.15)">🔧</div>
+          <div><h4>C++</h4><p>Classes, STL, OOP examples</p></div>
+        </div>
+        <div class="lang-card" onclick="launchIDE('java')">
+          <div class="lang-circle" style="background:rgba(176,114,25,0.15)">☕</div>
+          <div><h4>Java</h4><p>OOP, collections, patterns</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="land-testi" id="challenges">
+    <div class="land-section-tag">// Student Reviews</div>
+    <div class="land-section-title">Loved by Learners</div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"Finally an editor that teaches me while I code. The AI hints are incredible — they guide me without just giving the answer."</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(91,141,238,0.15)">👩‍💻</div>
+          <div><div class="testi-name">Priya Sharma</div><div class="testi-role">B.Tech CSE, Jabalpur</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"I used 5 other online editors before this. CodeProfessor is the only one that feels like a real IDE. The theme options are 🔥"</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(78,203,113,0.15)">👨‍💻</div>
+          <div><div class="testi-name">Rahul Mishra</div><div class="testi-role">MCA Student, GGITS</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"The built-in tutorials are so well written. I went from knowing nothing about Python OOP to writing my own classes in one afternoon."</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:rgba(240,180,41,0.15)">👩‍🎓</div>
+          <div><div class="testi-name">Sneha Patel</div><div class="testi-role">1st Year BE, Baderia</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="land-footer">
+    <div>
+      <div class="land-footer-logo">Code<span>Professor</span></div>
+      <div class="land-footer-text" style="margin-top:0.3rem">Built by Prof. Abhishek Singh · Jabalpur, India</div>
+    </div>
+    <div class="land-footer-text">© 2025 CodeProfessor · Free for all students · <a href="#" style="color:var(--blue);text-decoration:none">pyofpython.wordpress.com</a></div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     IDE
+════════════════════════════════════════ -->
+<div id="ide">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="ide-logo" style="cursor:pointer" onclick="showLanding()">Code<span>Professor</span></div>
+    <div class="tb-div"></div>
+
+    <div class="lang-tabs">
+      <button class="lang-tab active" id="ltab-python" onclick="switchLang('python')">
+        <span class="ldot" style="background:#3572a5"></span><span class="ltxt">Python</span>
+      </button>
+      <button class="lang-tab" id="ltab-c" onclick="switchLang('c')">
+        <span class="ldot" style="background:#888"></span><span class="ltxt">C</span>
+      </button>
+      <button class="lang-tab" id="ltab-cpp" onclick="switchLang('cpp')">
+        <span class="ldot" style="background:#f34b7d"></span><span class="ltxt">C++</span>
+      </button>
+      <button class="lang-tab" id="ltab-java" onclick="switchLang('java')">
+        <span class="ldot" style="background:#b07219"></span><span class="ltxt">Java</span>
+      </button>
+    </div>
+
+    <div class="tb-div"></div>
+
+    <div class="tb-right">
+      <div class="pts-display" id="ptsDisplay">⭐ 0 XP</div>
+      <div class="tb-div"></div>
+      <div class="font-ctrl">
+        <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+        <span id="fontSizeDisplay">14</span>
+        <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+      </div>
+      <select class="theme-sel" onchange="changeTheme(this.value)" id="themeSel">
+        <option value="dracula">🌙 Dracula</option>
+        <option value="monokai">🔥 Monokai</option>
+        <option value="material-darker">🌑 Material</option>
+        <option value="nord">❄️ Nord</option>
+        <option value="solarized dark">🌅 Solarized</option>
+      </select>
+      <button class="ib" onclick="toggleLight()" data-tooltip="Toggle Light Mode">☀️</button>
+      <button class="ib" onclick="formatCode()" data-tooltip="Format Code">⚡</button>
+      <button class="ib" onclick="copyCode()" data-tooltip="Copy Code">📋</button>
+      <button class="ib" onclick="downloadCode()" data-tooltip="Download File">💾</button>
+      <button class="ib" onclick="showShortcuts()" data-tooltip="Keyboard Shortcuts">⌨️</button>
+      <button class="ib" onclick="toggleSidebar()" data-tooltip="Toggle Sidebar">◀</button>
+      <button class="ib" onclick="toggleAI()" data-tooltip="AI Hints">🤖</button>
+      <button class="run-btn" id="runBtn" onclick="runCode()">
+        ▶ Run <span class="kbd">F5</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="ide-main">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="stabs">
+        <div class="stab active" onclick="switchPanel('tutorials',this)">📖 Learn</div>
+        <div class="stab" onclick="switchPanel('challenges',this)">🎯 Challenges</div>
+        <div class="stab" onclick="switchPanel('notes',this)">📝 Notes</div>
+        <div class="stab" onclick="switchPanel('collab',this)">👥 Collab</div>
+        <div class="stab" onclick="switchPanel('settings',this)">⚙️</div>
+      </div>
+
+      <!-- TUTORIALS PANEL -->
+      <div class="spanel active" id="panel-tutorials">
+        <div class="tut-search">
+          <input type="text" placeholder="🔍 Search tutorials..." oninput="filterTutorials(this.value)">
+        </div>
+        <div class="tut-list" id="tutList"></div>
+        <div class="tut-progress">
+          <div style="display:flex;justify-content:space-between">
+            <span id="progLabel">0 / 25 completed</span>
+            <span style="color:var(--green);font-weight:700" id="progPct">0%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- CHALLENGES PANEL -->
+      <div class="spanel" id="panel-challenges">
+        <div class="chal-list" id="chalList"></div>
+      </div>
+
+      <!-- NOTES PANEL -->
+      <div class="spanel" id="panel-notes">
+        <div class="notes-area">
+          <textarea class="notes-ta" id="notesTA" placeholder="Your notes, ideas, code snippets...&#10;&#10;This is auto-saved!"></textarea>
+          <button class="notes-save-btn" onclick="saveNotes()">💾 Save Notes</button>
+        </div>
+      </div>
+
+      <!-- COLLAB PANEL -->
+      <div class="spanel" id="panel-collab">
+        <div class="collab-area">
+          <div class="collab-card">
+            <h4>🔗 Live Session</h4>
+            <input class="room-inp" id="roomInp" placeholder="Enter Room ID (e.g. prof-101)">
+            <button class="room-btn cr" onclick="createRoom()">✦ Create Room</button>
+            <button class="room-btn jo" onclick="joinRoom()">→ Join Room</button>
+          </div>
+          <div class="collab-card">
+            <h4>👥 Online Now</h4>
+            <div class="online-list" id="onlineList">
+              <div class="user-pill"><div class="udot"></div><span>You</span><span class="uyou">YOU</span></div>
+            </div>
+          </div>
+          <div style="padding:0.75rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border);font-size:0.72rem;color:var(--text2);line-height:1.7;">
+            💡 <strong style="color:var(--text)">Real-time collaboration</strong> via WebSockets — coming in v2. Share your Room ID with friends!
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PANEL -->
+      <div class="spanel" id="panel-settings">
+        <div class="settings-area">
+          <div class="settings-group">
+            <h4>Editor</h4>
+            <div class="setting-row">
+              <div><div class="setting-label">Line Numbers</div></div>
+              <div class="toggle on" id="toggle-lineNumbers" onclick="toggleSetting('lineNumbers',this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Auto-close Brackets</div></div>
+              <div class="toggle on" id="toggle-brackets" onclick="toggleSetting('brackets',this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Highlight Active Line</div></div>
+              <div class="toggle on" id="toggle-activeLine" onclick="toggleSetting('activeLine',this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Code Folding</div></div>
+              <div class="toggle on" id="toggle-folding" onclick="toggleSetting('folding',this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Auto-complete</div></div>
+              <div class="toggle on" id="toggle-autocomplete" onclick="toggleSetting('autocomplete',this)"><div class="toggle-knob"></div></div>
+            </div>
+          </div>
+          <div class="settings-group">
+            <h4>Indentation</h4>
+            <div class="setting-row">
+              <div class="setting-label">Tab Size</div>
+              <select class="setting-sel" onchange="setTabSize(this.value)">
+                <option value="2">2 spaces</option>
+                <option value="4" selected>4 spaces</option>
+                <option value="8">8 spaces</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-group">
+            <h4>Output</h4>
+            <div class="setting-row">
+              <div><div class="setting-label">Auto-scroll Output</div></div>
+              <div class="toggle on" id="toggle-autoscroll" onclick="toggleSetting('autoscroll',this)"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Show Line Numbers</div></div>
+              <div class="toggle on" id="toggle-outputLines" onclick="toggleSetting('outputLines',this)"><div class="toggle-knob"></div></div>
+            </div>
+          </div>
+          <div class="settings-group">
+            <h4>About</h4>
+            <div style="font-size:0.78rem;color:var(--text2);line-height:1.7">
+              <strong style="color:var(--text)">CodeProfessor v2.0</strong><br>
+              Built by Prof. Abhishek Singh<br>
+              Jabalpur, MP, India<br>
+              <a href="#" style="color:var(--blue)">pyofpython.wordpress.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDITOR + OUTPUT -->
+    <div class="editor-area">
+      <div class="editor-tabs-bar" id="editorTabsBar">
+        <div class="etab active" id="tab-main" data-file="main.py">
+          <span class="etab-dot" style="background:#3572a5"></span>
+          <span>main.py</span>
+        </div>
+        <button class="tab-add" onclick="addNewTab()" title="New file">+</button>
+      </div>
+      <div class="cm-wrap" id="cmWrap">
+        <textarea id="cmeditor"></textarea>
+      </div>
+      <div class="output-panel" id="outputPanel">
+        <div class="output-bar">
+          <div class="otab active" onclick="switchOTab('console',this)" id="otab-console">Console</div>
+          <div class="otab" onclick="switchOTab('input',this)" id="otab-input">⌨️ Input</div>
+          <div class="otab" onclick="switchOTab('history',this)" id="otab-history">📜 History</div>
+          <div class="obar-right">
+            <span id="execTime" style="font-size:0.65rem;color:var(--text2);font-family:var(--font-code)"></span>
+            <button class="oib" onclick="clearOutput()" title="Clear">🗑</button>
+            <button class="oib" onclick="cycleOutputSize()" title="Resize" id="resizeBtn">⬆</button>
+          </div>
+        </div>
+        <div class="output-body" id="outputBody">
+          <div class="oline sys"><span class="oprompt">»</span><span class="otxt">CodeProfessor v2.0 ready — Python 3 live in browser. Press F5 to run.</span></div>
+        </div>
+        <div class="stdin-row" id="stdinRow" style="display:none">
+          <span class="stdin-label">stdin ›</span>
+          <input class="stdin-inp" id="stdinInp" placeholder="Type input and press Enter..." onkeydown="handleStdin(event)">
+        </div>
+      </div>
+    </div>
+
+    <!-- AI HINTS PANEL -->
+    <div class="ai-panel" id="aiPanel">
+      <div class="ai-header">
+        <h3><span class="ai-dot"></span> AI Assistant</h3>
+        <button class="oib" onclick="toggleAI()" style="width:22px;height:22px;font-size:0.7rem">✕</button>
+      </div>
+      <div class="ai-body" id="aiBody">
+        <div class="ai-msg system">
+          <div class="ai-label hint">Assistant</div>
+          Hi! I'm your coding assistant. Run your code and I'll analyze it, spot errors, and give smart hints. Click <strong>Hint</strong> anytime you're stuck!
+        </div>
+      </div>
+      <div class="ai-actions">
+        <button class="ai-btn primary" onclick="getAIHint()">💡 Hint</button>
+        <button class="ai-btn sec" onclick="explainCode()">🔍 Explain</button>
+        <button class="ai-btn sec" onclick="clearAI()">🗑</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <div class="save-indicator" id="saveIndicator"></div>
+    <div class="sitem" id="statusReady">● Ready</div>
+    <div class="sitem" id="statusLang">🐍 Python 3.11</div>
+    <div class="sitem" id="statusCursor">Ln 1, Col 1</div>
+    <div class="sitem right">F5 Run · Ctrl+/ Comment · Ctrl+S Save · Ctrl+Enter Run</div>
+  </div>
+</div>
+
+<!-- TUTORIAL/CHALLENGE MODAL -->
+<div class="modal-ov" id="tutModal">
+  <div class="modal" id="tutModalInner">
+    <div class="modal-hd">
+      <div>
+        <div id="modalTag" style="font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);margin-bottom:0.35rem"></div>
+        <h2 id="modalTitle"></h2>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-code" id="modalCode"></div>
+      <div id="modalTests"></div>
+    </div>
+    <div class="modal-ftr" id="modalFtr"></div>
+  </div>
+</div>
+
+<!-- SHORTCUTS MODAL -->
+<div class="modal-ov" id="shortcutsModal">
+  <div class="modal" style="width:640px">
+    <div class="modal-hd">
+      <h2>⌨️ Keyboard Shortcuts</h2>
+      <button class="modal-close" onclick="closeShortcuts()">✕</button>
+    </div>
+    <div class="shortcuts-grid">
+      <div class="sc-row"><span class="sc-label">Run code</span><div class="sc-keys"><span class="sc-key">F5</span><span class="sc-key">Ctrl+Enter</span></div></div>
+      <div class="sc-row"><span class="sc-label">Toggle comment</span><div class="sc-keys"><span class="sc-key">Ctrl+/</span></div></div>
+      <div class="sc-row"><span class="sc-label">Save</span><div class="sc-keys"><span class="sc-key">Ctrl+S</span></div></div>
+      <div class="sc-row"><span class="sc-label">Undo</span><div class="sc-keys"><span class="sc-key">Ctrl+Z</span></div></div>
+      <div class="sc-row"><span class="sc-label">Redo</span><div class="sc-keys"><span class="sc-key">Ctrl+Y</span></div></div>
+      <div class="sc-row"><span class="sc-label">Find</span><div class="sc-keys"><span class="sc-key">Ctrl+F</span></div></div>
+      <div class="sc-row"><span class="sc-label">Select all</span><div class="sc-keys"><span class="sc-key">Ctrl+A</span></div></div>
+      <div class="sc-row"><span class="sc-label">Indent more</span><div class="sc-keys"><span class="sc-key">Tab</span></div></div>
+      <div class="sc-row"><span class="sc-label">Indent less</span><div class="sc-keys"><span class="sc-key">Shift+Tab</span></div></div>
+      <div class="sc-row"><span class="sc-label">Toggle sidebar</span><div class="sc-keys"><span class="sc-key">Ctrl+B</span></div></div>
+      <div class="sc-row"><span class="sc-label">Toggle AI panel</span><div class="sc-keys"><span class="sc-key">Ctrl+I</span></div></div>
+      <div class="sc-row"><span class="sc-label">Font size +</span><div class="sc-keys"><span class="sc-key">Ctrl+=</span></div></div>
+      <div class="sc-row"><span class="sc-label">Font size -</span><div class="sc-keys"><span class="sc-key">Ctrl+-</span></div></div>
+      <div class="sc-row"><span class="sc-label">Clear output</span><div class="sc-keys"><span class="sc-key">Ctrl+L</span></div></div>
+    </div>
+    <div class="modal-ftr">
+      <button class="mbtn s" onclick="closeShortcuts()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+<div class="xp-badge" id="xpBadge"></div>
+
+<script>
+/* ════════════════════════════════════════
+   DATA — TUTORIALS
+════════════════════════════════════════ */
+const TUTORIALS = [
+  { id:'py_hello', lang:'python', group:'🐍 Python Basics', title:'Hello, World!', level:'e',
+    desc:'Every programming journey starts here. print() sends text to the console.',
+    code:`# Your first Python program!
+# The print() function outputs text to the console
+
+print("Hello, World!")
+print("Welcome to CodeProfessor! 🚀")
+
+# Print variables
+name = "Student"
+print("Hello,", name)
+
+# f-strings (modern way to format strings)
+age = 18
+language = "Python"
+print(f"I am {age} years old and I code in {language}!")` },
+
+  { id:'py_vars', lang:'python', group:'🐍 Python Basics', title:'Variables & Data Types', level:'e',
+    desc:'Python is dynamically typed — variables can hold any type and can change types.',
+    code:`# Variables and Data Types
+
+# Integer
+x = 42
+print(type(x))          # <class 'int'>
+
+# Float
+pi = 3.14159
+print(type(pi))         # <class 'float'>
+
+# String
+name = "CodeProfessor"
+print(type(name))       # <class 'str'>
+
+# Boolean
+is_awesome = True
+print(type(is_awesome)) # <class 'bool'>
+
+# NoneType
+nothing = None
+print(type(nothing))    # <class 'NoneType'>
+
+# Multiple assignment
+a, b, c = 10, 20, 30
+print(a + b + c)        # 60
+
+# Type conversion
+num_str = "100"
+num = int(num_str)
+print(num * 2)          # 200
+
+# Check type
+print(isinstance(3.14, float))  # True` },
+
+  { id:'py_strings', lang:'python', group:'🐍 Python Basics', title:'Strings & String Methods', level:'e',
+    desc:'Strings are immutable sequences. Python has dozens of built-in string methods.',
+    code:`# Strings in Python
+
+s = "Hello, CodeProfessor!"
+
+# Length
+print(len(s))           # 21
+
+# Uppercase / Lowercase
+print(s.upper())
+print(s.lower())
+
+# Slicing [start:end:step]
+print(s[0:5])           # Hello
+print(s[-1])            # !
+print(s[::-1])          # reversed
+
+# String methods
+print(s.replace("Hello", "Hi"))
+print(s.split(", "))    # ['Hello', 'CodeProfessor!']
+print("  spaces  ".strip())
+
+# Check content
+print(s.startswith("Hello"))  # True
+print(s.endswith("!"))        # True
+print("Prof" in s)            # True
+
+# Format strings
+name, score = "Alice", 95
+print(f"{name} scored {score}/100 — {'Pass' if score >= 40 else 'Fail'}")
+
+# Repeat and join
+print("-" * 30)
+words = ["Python", "is", "fun"]
+print(" ".join(words))` },
+
+  { id:'py_loops', lang:'python', group:'🐍 Python Basics', title:'For & While Loops', level:'e',
+    desc:'Loops execute code repeatedly. Python\'s for loop iterates over any iterable.',
+    code:`# Loops in Python
+
+# For loop with range
+print("Counting:")
+for i in range(1, 6):
+    print(f"  {i}", end=" ")
+print()
+
+# For loop over a list
+fruits = ["🍎 Apple", "🍌 Banana", "🍇 Grapes"]
+for fruit in fruits:
+    print(fruit)
+
+# While loop
+count = 5
+print("\\nCountdown:")
+while count > 0:
+    print(count, end=" ")
+    count -= 1
+print("🚀 Launch!")
+
+# Loop with enumerate (index + value)
+print()
+for i, fruit in enumerate(fruits, start=1):
+    print(f"{i}. {fruit}")
+
+# Break and Continue
+print("\\nSkip 3, stop at 7:")
+for n in range(1, 10):
+    if n == 3: continue
+    if n == 7: break
+    print(n, end=" ")
+
+# List comprehension (Pythonic loop)
+squares = [x**2 for x in range(1, 8)]
+print("\\nSquares:", squares)
+
+evens = [x for x in range(20) if x % 2 == 0]
+print("Evens:", evens)` },
+
+  { id:'py_funcs', lang:'python', group:'🐍 Python Basics', title:'Functions', level:'e',
+    desc:'Functions are reusable blocks of code. In Python, functions are first-class citizens.',
+    code:`# Functions in Python
+
+# Basic function with return value
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}! 👋"
+
+print(greet("Alice"))
+print(greet("Bob", "Hi"))
+
+# *args — variable positional arguments
+def total(*numbers):
+    return sum(numbers)
+
+print(total(1, 2, 3, 4, 5))    # 15
+
+# **kwargs — variable keyword arguments
+def display_info(**info):
+    for key, value in info.items():
+        print(f"  {key}: {value}")
+
+display_info(name="Alice", age=20, city="Jabalpur")
+
+# Lambda (anonymous functions)
+square = lambda x: x ** 2
+print(square(7))    # 49
+
+# Functions as arguments
+numbers = [5, 2, 8, 1, 9, 3]
+print(sorted(numbers, key=lambda x: -x))
+
+# Recursive function
+def factorial(n):
+    if n <= 1:
+        return 1
+    return n * factorial(n - 1)
+
+for i in range(1, 8):
+    print(f"{i}! = {factorial(i)}")` },
+
+  { id:'py_lists', lang:'python', group:'🐍 Python Basics', title:'Lists & Comprehensions', level:'e',
+    desc:'Lists are ordered, mutable sequences. Python\'s most versatile data structure.',
+    code:`# Lists in Python
+
+nums = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
+
+# Basic stats
+print(f"Length: {len(nums)}")
+print(f"Sum: {sum(nums)}")
+print(f"Min: {min(nums)}, Max: {max(nums)}")
+
+# Methods
+nums.append(7)          # add to end
+nums.insert(0, 0)       # insert at index
+nums.remove(1)          # remove first occurrence
+popped = nums.pop()     # remove and return last
+nums.sort()
+print("Sorted:", nums)
+
+# Slicing [start:end:step]
+print("First 3:", nums[:3])
+print("Last 3:", nums[-3:])
+print("Every 2nd:", nums[::2])
+print("Reversed:", nums[::-1])
+
+# 2D List (Matrix)
+matrix = [[1,2,3],[4,5,6],[7,8,9]]
+for row in matrix:
+    print(row)
+
+# Comprehension — square numbers
+squares = [x**2 for x in range(1, 11)]
+print("Squares:", squares)
+
+# Filtered comprehension
+primes = [x for x in range(2, 30)
+          if all(x % i != 0 for i in range(2, x))]
+print("Primes:", primes)` },
+
+  { id:'py_dicts', lang:'python', group:'🐍 Python Basics', title:'Dictionaries & Sets', level:'m',
+    desc:'Dictionaries store key-value pairs. Sets store unique unordered elements.',
+    code:`# Dictionaries in Python
+
+student = {
+    "name": "Alice",
+    "age": 20,
+    "grades": [85, 92, 78, 95],
+    "active": True
+}
+
+# Access
+print(student["name"])
+print(student.get("gpa", "N/A"))  # safe access
+
+# Modify
+student["gpa"] = 8.9
+student["grades"].append(88)
+
+# Iterate
+for key, val in student.items():
+    print(f"  {key}: {val}")
+
+# Dict comprehension
+squares = {x: x**2 for x in range(1, 8)}
+print("Squares dict:", squares)
+
+# Nested dict
+school = {
+    "CS101": {"teacher": "Prof. Abhishek", "students": 45},
+    "CS102": {"teacher": "Prof. Sharma", "students": 38}
+}
+for course, info in school.items():
+    print(f"{course}: {info['teacher']} ({info['students']} students)")
+
+# Sets
+a = {1, 2, 3, 4, 5}
+b = {3, 4, 5, 6, 7}
+print("Union:", a | b)
+print("Intersection:", a & b)
+print("Difference:", a - b)
+print("Unique words:", len({w.lower() for w in "the cat sat on the mat".split()}))` },
+
+  { id:'py_oop1', lang:'python', group:'🏗️ OOP', title:'Classes & Objects', level:'m',
+    desc:'Object-Oriented Programming organizes code into classes (blueprints) and objects (instances).',
+    code:`# Classes and Objects
+
+class BankAccount:
+    bank_name = "CodeBank"   # class variable
+
+    def __init__(self, owner, balance=0):
+        self.owner = owner       # instance variable
+        self.balance = balance
+        self._transactions = []  # "private" (convention)
+
+    def deposit(self, amount):
+        self.balance += amount
+        self._transactions.append(f"+{amount}")
+        return self
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            raise ValueError("Insufficient funds!")
+        self.balance -= amount
+        self._transactions.append(f"-{amount}")
+        return self
+
+    def statement(self):
+        print(f"\\n{'='*30}")
+        print(f"  {self.bank_name} — {self.owner}")
+        print(f"  Balance: ₹{self.balance:,}")
+        print(f"  Txns: {', '.join(self._transactions)}")
+        print(f"{'='*30}")
+
+    def __str__(self):
+        return f"Account({self.owner}, ₹{self.balance})"
+
+    def __repr__(self):
+        return f"BankAccount('{self.owner}', {self.balance})"
+
+
+acc = BankAccount("Alice", 1000)
+acc.deposit(500).deposit(200).withdraw(100)  # method chaining
+acc.statement()
+print(acc)` },
+
+  { id:'py_oop2', lang:'python', group:'🏗️ OOP', title:'Inheritance & Polymorphism', level:'m',
+    desc:'Inheritance lets a class reuse and extend another class. Polymorphism lets subclasses override methods.',
+    code:`# Inheritance and Polymorphism
+
+class Shape:
+    def __init__(self, color="white"):
+        self.color = color
+
+    def area(self):
+        raise NotImplementedError("Subclass must implement area()")
+
+    def describe(self):
+        print(f"{self.__class__.__name__}: color={self.color}, area={self.area():.2f}")
+
+
+class Circle(Shape):
+    def __init__(self, radius, color="red"):
+        super().__init__(color)
+        self.radius = radius
+
+    def area(self):
+        return 3.14159 * self.radius ** 2
+
+
+class Rectangle(Shape):
+    def __init__(self, w, h, color="blue"):
+        super().__init__(color)
+        self.width = w
+        self.height = h
+
+    def area(self):
+        return self.width * self.height
+
+
+class Triangle(Shape):
+    def __init__(self, base, height, color="green"):
+        super().__init__(color)
+        self.base = base
+        self.height = height
+
+    def area(self):
+        return 0.5 * self.base * self.height
+
+
+# Polymorphism — same method call, different behavior
+shapes = [Circle(5), Rectangle(4, 6), Triangle(3, 8)]
+for shape in shapes:
+    shape.describe()
+
+# isinstance and issubclass
+print(isinstance(shapes[0], Shape))   # True
+print(issubclass(Circle, Shape))      # True` },
+
+  { id:'py_deco', lang:'python', group:'⚙️ Advanced', title:'Decorators', level:'h',
+    desc:'Decorators wrap functions to add behavior without modifying their source code.',
+    code:`# Decorators in Python
+import time
+from functools import wraps
+
+# Simple decorator
+def timer(func):
+    @wraps(func)        # preserves original function metadata
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start
+        print(f"⏱ {func.__name__}() took {elapsed:.4f}s")
+        return result
+    return wrapper
+
+# Decorator with arguments
+def repeat(n):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for _ in range(n):
+                result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
+# Logging decorator
+def log(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"→ {func.__name__}({args}, {kwargs})")
+        result = func(*args, **kwargs)
+        print(f"← returned: {result}")
+        return result
+    return wrapper
+
+@timer
+@log
+def compute(n):
+    return sum(i**2 for i in range(n))
+
+@repeat(3)
+def say_hello():
+    print("Hello! 👋")
+
+compute(10000)
+print()
+say_hello()` },
+
+  { id:'py_gen', lang:'python', group:'⚙️ Advanced', title:'Generators & Iterators', level:'h',
+    desc:'Generators produce values lazily — one at a time — saving memory for large datasets.',
+    code:`# Generators in Python
+
+# A generator function uses 'yield'
+def count_up(start, end):
+    current = start
+    while current <= end:
+        yield current
+        current += 1
+
+# Use it like any iterable
+for n in count_up(1, 5):
+    print(n, end=" ")
+print()
+
+# Generator expression (like list comprehension but lazy)
+squares_gen = (x**2 for x in range(1, 11))
+print(list(squares_gen))
+
+# Fibonacci generator
+def fibonacci():
+    a, b = 0, 1
+    while True:          # infinite sequence!
+        yield a
+        a, b = b, a + b
+
+fib = fibonacci()
+print([next(fib) for _ in range(12)])
+
+# Memory comparison
+import sys
+big_list = [x**2 for x in range(100000)]   # stores all in RAM
+big_gen  = (x**2 for x in range(100000))   # lazy, tiny
+
+print(f"List size: {sys.getsizeof(big_list):,} bytes")
+print(f"Gen  size: {sys.getsizeof(big_gen):,} bytes")
+
+# Generator with send()
+def accumulator():
+    total = 0
+    while True:
+        value = yield total
+        if value is None:
+            break
+        total += value
+
+acc = accumulator()
+next(acc)           # prime the generator
+print(acc.send(10))
+print(acc.send(20))
+print(acc.send(5))` },
+
+  { id:'c_hello', lang:'c', group:'⚙️ C Language', title:'Hello World in C', level:'e',
+    desc:'C is a compiled, statically-typed language. Every program starts from the main() function.',
+    code:`#include <stdio.h>
+
+int main() {
+    // Print to console
+    printf("Hello, World!\\n");
+    printf("Welcome to CodeProfessor!\\n");
+
+    // Variables
+    int age = 20;
+    float gpa = 8.75;
+    char grade = 'A';
+    char name[] = "Alice";
+
+    printf("\\nStudent Info:\\n");
+    printf("Name  : %s\\n", name);
+    printf("Age   : %d\\n", age);
+    printf("GPA   : %.2f\\n", gpa);
+    printf("Grade : %c\\n", grade);
+
+    // Arithmetic
+    int a = 15, b = 4;
+    printf("\\n%d + %d = %d\\n", a, b, a+b);
+    printf("%d / %d = %d (int)\\n", a, b, a/b);
+    printf("%d %% %d = %d\\n", a, b, a%b);
+
+    return 0;
+}` },
+
+  { id:'cpp_hello', lang:'cpp', group:'🔧 C++', title:'Hello World in C++', level:'e',
+    desc:'C++ extends C with classes, templates, and the STL. cout replaces printf.',
+    code:`#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+int main() {
+    cout << "Hello, World!" << endl;
+    cout << "Welcome to CodeProfessor!" << endl;
+
+    // Variables
+    string name = "CodeProfessor";
+    int year = 2025;
+    double pi = 3.14159265;
+
+    cout << "\\nName: " << name << endl;
+    cout << "Year: " << year << endl;
+    cout << "Pi  : " << pi << endl;
+
+    // Vector (dynamic array)
+    vector<int> numbers = {5, 3, 8, 1, 9, 2};
+    cout << "\\nNumbers: ";
+    for (int n : numbers) cout << n << " ";
+    cout << endl;
+
+    // Range-based for
+    vector<string> langs = {"Python", "C", "C++", "Java"};
+    cout << "\\nLanguages:" << endl;
+    for (const string& lang : langs) {
+        cout << "  ✓ " << lang << endl;
+    }
+
+    return 0;
+}` },
+
+  { id:'java_hello', lang:'java', group:'☕ Java', title:'Hello World in Java', level:'e',
+    desc:'Java is a strongly-typed OOP language. Every program needs a class with a main method.',
+    code:`public class Main {
+    public static void main(String[] args) {
+        // Print to console
+        System.out.println("Hello, World!");
+        System.out.println("Welcome to CodeProfessor!");
+
+        // Variables
+        String name = "Alice";
+        int age = 20;
+        double gpa = 8.75;
+        boolean isStudent = true;
+
+        System.out.println("\\nStudent Info:");
+        System.out.println("Name    : " + name);
+        System.out.println("Age     : " + age);
+        System.out.printf("GPA     : %.2f%n", gpa);
+        System.out.println("Student : " + isStudent);
+
+        // Array
+        int[] scores = {85, 92, 78, 95, 88};
+        int total = 0;
+        for (int score : scores) total += score;
+        System.out.printf("\\nAverage score: %.1f%n", (double)total/scores.length);
+    }
+}` },
+];
+
+/* ════════════════════════════════════════
+   DATA — CHALLENGES
+════════════════════════════════════════ */
+const CHALLENGES = [
+  { id:'ch_fib', title:'Fibonacci Sequence', level:'e', pts:50, tags:['loops','lists'],
+    desc:'Write a function fibonacci(n) that returns the first n Fibonacci numbers as a list.',
+    hint:'Start with a=[0,1] and keep appending a[-1]+a[-2] until len(a)==n.',
+    tests:[
+      {input:'fibonacci(5)',  expected:'[0, 1, 1, 2, 3]'},
+      {input:'fibonacci(1)',  expected:'[0]'},
+      {input:'fibonacci(8)',  expected:'[0, 1, 1, 2, 3, 5, 8, 13]'},
+    ],
+    starter:`def fibonacci(n):
+    # Your code here
+    pass
+
+# Test it
+print(fibonacci(8))`
+  },
+  { id:'ch_rev', title:'Reverse Without Slicing', level:'e', pts:40, tags:['strings'],
+    desc:'Write reverse_str(s) that reverses a string WITHOUT using [::-1] or reversed().',
+    hint:'Use a loop to build the reversed string character by character.',
+    tests:[
+      {input:'reverse_str("hello")',  expected:'"olleh"'},
+      {input:'reverse_str("Python")', expected:'"nohtyP"'},
+      {input:'reverse_str("a")',      expected:'"a"'},
+    ],
+    starter:`def reverse_str(s):
+    # Your code here — no slicing!
+    pass
+
+print(reverse_str("Python"))`
+  },
+  { id:'ch_prime', title:'Is Prime?', level:'e', pts:60, tags:['math','loops'],
+    desc:'Write is_prime(n) that returns True if n is prime, False otherwise. Optimize for large numbers.',
+    hint:'Only check divisors up to sqrt(n). Skip even numbers after 2.',
+    tests:[
+      {input:'is_prime(7)',   expected:'True'},
+      {input:'is_prime(15)',  expected:'False'},
+      {input:'is_prime(97)',  expected:'True'},
+      {input:'is_prime(1)',   expected:'False'},
+    ],
+    starter:`def is_prime(n):
+    # Your code here
+    pass
+
+# Test
+for n in [1, 2, 7, 10, 97]:
+    print(f"is_prime({n}) = {is_prime(n)}")`
+  },
+  { id:'ch_anagram', title:'Anagram Checker', level:'m', pts:80, tags:['strings','dicts'],
+    desc:'Write is_anagram(s1, s2) that returns True if the two strings are anagrams of each other. Case-insensitive.',
+    hint:'Two strings are anagrams if they have the same character counts. Try using Counter or sorting.',
+    tests:[
+      {input:'is_anagram("listen","silent")', expected:'True'},
+      {input:'is_anagram("hello","world")',   expected:'False'},
+      {input:'is_anagram("Race","Care")',     expected:'True'},
+    ],
+    starter:`def is_anagram(s1, s2):
+    # Your code here
+    pass
+
+print(is_anagram("listen", "silent"))
+print(is_anagram("hello", "world"))`
+  },
+  { id:'ch_flatten', title:'Flatten Nested List', level:'m', pts:100, tags:['lists','recursion'],
+    desc:'Write flatten(lst) that flattens a deeply nested list into a flat list.',
+    hint:'Use recursion. If an element is a list, recurse into it. Otherwise, add it to the result.',
+    tests:[
+      {input:'flatten([1,[2,[3,4]],5])',     expected:'[1, 2, 3, 4, 5]'},
+      {input:'flatten([[1,2],[3,[4,5]]])',    expected:'[1, 2, 3, 4, 5]'},
+      {input:'flatten([1,2,3])',              expected:'[1, 2, 3]'},
+    ],
+    starter:`def flatten(lst):
+    # Your code here
+    pass
+
+print(flatten([1, [2, [3, 4]], 5]))`
+  },
+  { id:'ch_word_freq', title:'Word Frequency Counter', level:'m', pts:90, tags:['dicts','strings'],
+    desc:'Write word_count(text) that returns a dict of word frequencies (case-insensitive, ignore punctuation).',
+    hint:'Split the text by spaces, clean each word (lower + strip punctuation), then count using a dict.',
+    tests:[
+      {input:'word_count("the cat sat on the mat")["the"]', expected:'2'},
+      {input:'word_count("Hello hello HELLO")["hello"]',    expected:'3'},
+    ],
+    starter:`def word_count(text):
+    # Your code here
+    pass
+
+result = word_count("the cat sat on the mat the cat")
+print(sorted(result.items(), key=lambda x: -x[1]))`
+  },
+  { id:'ch_stack', title:'Implement a Stack', level:'m', pts:110, tags:['OOP','data structures'],
+    desc:'Implement a Stack class with push(x), pop(), peek(), is_empty(), and size() methods.',
+    hint:'Use a Python list internally. push appends, pop removes from the end.',
+    tests:[
+      {input:'s=Stack();s.push(1);s.push(2);s.pop()', expected:'2'},
+      {input:'s=Stack();s.push(5);s.peek()',           expected:'5'},
+      {input:'s=Stack();s.is_empty()',                 expected:'True'},
+    ],
+    starter:`class Stack:
+    def __init__(self):
+        pass  # Your code here
+
+    def push(self, x):
+        pass
+
+    def pop(self):
+        pass
+
+    def peek(self):
+        pass
+
+    def is_empty(self):
+        pass
+
+    def size(self):
+        pass
+
+s = Stack()
+s.push(10); s.push(20); s.push(30)
+print("Size:", s.size())
+print("Peek:", s.peek())
+print("Pop:", s.pop())
+print("Size after pop:", s.size())`
+  },
+  { id:'ch_binary', title:'Binary Search', level:'h', pts:130, tags:['algorithms','loops'],
+    desc:'Implement binary_search(arr, target) on a sorted array. Return index if found, -1 otherwise.',
+    hint:'Compare target with the middle element. Narrow the search to left or right half each time.',
+    tests:[
+      {input:'binary_search([1,3,5,7,9,11],7)',  expected:'3'},
+      {input:'binary_search([2,4,6,8,10],5)',    expected:'-1'},
+      {input:'binary_search([1,2,3,4,5],1)',     expected:'0'},
+    ],
+    starter:`def binary_search(arr, target):
+    # Your code here — O(log n) please!
+    pass
+
+arr = [1, 3, 5, 7, 9, 11, 13, 15]
+print(binary_search(arr, 7))   # 3
+print(binary_search(arr, 6))   # -1`
+  },
+];
+
+/* ════════════════════════════════════════
+   STARTER CODE
+════════════════════════════════════════ */
+const STARTERS = {
+  python:`# CodeProfessor — Python 3 Live Editor
+# Press F5 or click Run to execute!
+
+def greet(name, lang="Python"):
+    return f"Hello {name}! Let's master {lang} together 🚀"
+
+# Lists and loops
+topics = ["Variables", "Loops", "Functions", "OOP", "Data Science"]
+print("Today's learning path:")
+for i, topic in enumerate(topics, 1):
+    print(f"  {i}. {topic}")
+
+print()
+print(greet("Student"))
+
+# Quick math
+numbers = list(range(1, 11))
+print(f"\\nNumbers: {numbers}")
+print(f"Sum: {sum(numbers)}, Avg: {sum(numbers)/len(numbers):.1f}")
+`,
+  c:`// CodeProfessor — C Editor
+// Syntax highlighting fully active!
+// Full compilation coming via server backend.
+
+#include <stdio.h>
+
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+int fibonacci(int n) {
+    if (n <= 1) return n;
+    return fibonacci(n-1) + fibonacci(n-2);
+}
+
+int main() {
+    printf("=== CodeProfessor C Editor ===\\n\\n");
+
+    printf("Factorials:\\n");
+    for (int i = 1; i <= 8; i++) {
+        printf("  %d! = %d\\n", i, factorial(i));
+    }
+
+    printf("\\nFibonacci:\\n  ");
+    for (int i = 0; i < 10; i++) {
+        printf("%d ", fibonacci(i));
+    }
+    printf("\\n");
+
+    return 0;
+}`,
+  cpp:`// CodeProfessor — C++ Editor
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <numeric>
+using namespace std;
+
+template<typename T>
+class Stack {
+    vector<T> data;
+public:
+    void push(T val) { data.push_back(val); }
+    T pop() { T top = data.back(); data.pop_back(); return top; }
+    T peek() const { return data.back(); }
+    bool empty() const { return data.empty(); }
+    size_t size() const { return data.size(); }
+};
+
+int main() {
+    cout << "=== CodeProfessor C++ Editor ===" << endl << endl;
+
+    Stack<int> s;
+    for (int i = 1; i <= 5; i++) s.push(i * 10);
+
+    cout << "Stack (LIFO):" << endl;
+    while (!s.empty()) cout << "  " << s.pop() << endl;
+
+    vector<int> v = {5,3,8,1,9,2,7,4,6};
+    sort(v.begin(), v.end());
+    int total = accumulate(v.begin(), v.end(), 0);
+    cout << "\\nSorted: ";
+    for (int n : v) cout << n << " ";
+    cout << "\\nSum: " << total << endl;
+
+    return 0;
+}`,
+  java:`// CodeProfessor — Java Editor
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+
+    static int fibonacci(int n) {
+        if (n <= 1) return n;
+        return fibonacci(n-1) + fibonacci(n-2);
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== CodeProfessor Java Editor ===");
+
+        // Fibonacci
+        System.out.print("\\nFibonacci: ");
+        for (int i = 0; i < 10; i++)
+            System.out.print(fibonacci(i) + " ");
+        System.out.println();
+
+        // Collections
+        List<String> langs = Arrays.asList("Python","C","C++","Java","JavaScript");
+        System.out.println("\\nLanguages with 4+ chars:");
+        langs.stream()
+             .filter(l -> l.length() >= 4)
+             .sorted()
+             .forEach(l -> System.out.println("  ✓ " + l));
+
+        // HashMap
+        Map<String,Integer> scores = new HashMap<>();
+        scores.put("Alice", 92); scores.put("Bob", 85); scores.put("Carol", 97);
+        System.out.println("\\nTop student: " +
+            scores.entrySet().stream()
+                  .max(Map.Entry.comparingByValue())
+                  .map(e -> e.getKey() + " (" + e.getValue() + ")")
+                  .orElse("none"));
+    }
+}`,
+};
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let editor;
+let currentLang = 'python';
+let currentTheme = 'dracula';
+let fontSize = 14;
+let sidebarOpen = true;
+let aiPanelOpen = true;
+let outputSize = 0; // 0=normal, 1=large, 2=small
+let userPoints = 0;
+let completedTutorials = new Set();
+let solvedChallenges = new Set();
+let lineCounter = 0;
+let settings = {
+  lineNumbers: true, brackets: true, activeLine: true,
+  folding: true, autocomplete: true, autoscroll: true, outputLines: true
+};
+let runHistory = [];
+let isLightMode = false;
+let currentModalData = null;
+let notesContent = '';
+let tabFiles = [{ name:'main.py', code: STARTERS.python, lang:'python' }];
+let activeTab = 0;
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  // Load saved state
+  const saved = localStorage.getItem('cp_state');
+  if (saved) {
+    try {
+      const s = JSON.parse(saved);
+      if (s.points)       userPoints = s.points;
+      if (s.completed)    completedTutorials = new Set(s.completed);
+      if (s.solved)       solvedChallenges = new Set(s.solved);
+      if (s.notes)        notesContent = s.notes;
+      if (s.fontSize)     fontSize = s.fontSize;
+      if (s.theme)        currentTheme = s.theme;
+    } catch(e) {}
+  }
+
+  // Init CodeMirror
+  editor = CodeMirror.fromTextArea(document.getElementById('cmeditor'), {
+    lineNumbers: true,
+    theme: currentTheme,
+    mode: 'python',
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    styleActiveLine: true,
+    indentUnit: 4,
+    tabSize: 4,
+    indentWithTabs: false,
+    lineWrapping: false,
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers","CodeMirror-foldgutter"],
+    extraKeys: {
+      "F5":          () => runCode(),
+      "Ctrl-Enter":  () => runCode(),
+      "Ctrl-/":      (cm) => cm.execCommand('toggleComment'),
+      "Ctrl-S":      () => saveCode(),
+      "Ctrl-B":      () => toggleSidebar(),
+      "Ctrl-I":      () => toggleAI(),
+      "Ctrl-L":      () => clearOutput(),
+      "Ctrl-=":      () => changeFontSize(1),
+      "Ctrl--":      () => changeFontSize(-1),
+      "Tab":         (cm) => { if(cm.somethingSelected()) cm.indentSelection('add'); else cm.execCommand('indentMore'); },
+      "Shift-Tab":   (cm) => cm.execCommand('indentLess'),
+    }
+  });
+
+  editor.setValue(STARTERS.python);
+
+  // Restore font size and theme
+  editor.getWrapperElement().style.fontSize = fontSize + 'px';
+  document.getElementById('fontSizeDisplay').textContent = fontSize;
+  document.getElementById('themeSel').value = currentTheme;
+
+  // Cursor position tracking
+  editor.on('cursorActivity', updateCursorStatus);
+
+  // Auto-save on change
+  editor.on('change', () => {
+    document.getElementById('saveIndicator').classList.add('dirty');
+    clearTimeout(editor._saveTimer);
+    editor._saveTimer = setTimeout(saveCode, 2000);
+  });
+
+  // Auto-complete
+  editor.on('inputRead', (cm, change) => {
+    if (settings.autocomplete && change.text[0] && change.text[0].match(/[\w\.]/)) {
+      setTimeout(() => cm.showHint({ hint: CodeMirror.hint.anyword, completeSingle: false }), 150);
+    }
+  });
+
+  // Render sidebar content
+  renderTutorials();
+  renderChallenges();
+  updateProgress();
+
+  // Load notes
+  document.getElementById('notesTA').value = notesContent;
+
+  // Update points display
+  updatePointsDisplay();
+});
+
+/* ════════════════════════════════════════
+   LANDING ↔ IDE
+════════════════════════════════════════ */
+function launchIDE(panel) {
+  document.getElementById('landing').classList.add('hide');
+  document.getElementById('ide').classList.add('show');
+  setTimeout(() => {
+    editor.refresh();
+    if (panel && panel !== 'python' && panel !== 'c' && panel !== 'cpp' && panel !== 'java') {
+      switchPanel(panel, document.querySelector('.stab'));
+    } else if (['python','c','cpp','java'].includes(panel)) {
+      switchLang(panel);
+    }
+  }, 100);
+}
+
+function showLanding() {
+  document.getElementById('landing').classList.remove('hide');
+  document.getElementById('ide').classList.remove('show');
+}
+
+/* ════════════════════════════════════════
+   LANGUAGE
+════════════════════════════════════════ */
+const LANG_CFG = {
+  python: { mode:'python', file:'main.py', dot:'#3572a5', status:'🐍 Python 3.11', ext:'.py' },
+  c:      { mode:'text/x-csrc', file:'main.c', dot:'#888', status:'⚙️ C (GCC)', ext:'.c' },
+  cpp:    { mode:'text/x-c++src', file:'main.cpp', dot:'#f34b7d', status:'⚙️ C++ (G++)', ext:'.cpp' },
+  java:   { mode:'text/x-java', file:'Main.java', dot:'#b07219', status:'☕ Java 17', ext:'.java' },
+};
+
+function switchLang(lang) {
+  currentLang = lang;
+  const cfg = LANG_CFG[lang];
+  editor.setOption('mode', cfg.mode);
+  editor.setValue(STARTERS[lang]);
+  document.getElementById('statusLang').textContent = cfg.status;
+  document.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`ltab-${lang}`).classList.add('active');
+  // Update tab
+  const tab = document.getElementById('tab-main');
+  tab.querySelector('.etab-dot').style.background = cfg.dot;
+  tab.querySelector('span:last-child').textContent = cfg.file;
+  clearOutput();
+  addLine('sys', `Switched to ${lang.toUpperCase()} — ${cfg.status.split(' ').slice(1).join(' ')}`);
+}
+
+/* ════════════════════════════════════════
+   RUN CODE
+════════════════════════════════════════ */
+function runCode() {
+  const code = editor.getValue().trim();
+  if (!code) { showToast('Editor is empty!','wn'); return; }
+
+  clearOutput();
+  const btn = document.getElementById('runBtn');
+  btn.classList.add('busy');
+  btn.textContent = '⏳ Running...';
+
+  const startTime = Date.now();
+
+  if (currentLang !== 'python') {
+    setTimeout(() => {
+      addLine('info', `${LANG_CFG[currentLang].status.split(' ').slice(1).join(' ')} — Server-side compilation coming in v2!`);
+      addLine('sys', 'Currently Python runs live in the browser via Skulpt.');
+      addLine('sys', 'C, C++, Java support full syntax highlighting & tutorials.');
+      addLine('info', '💡 Switch to Python tab for live execution.');
+      resetRunBtn();
+    }, 300);
+    return;
+  }
+
+  // Add to history
+  runHistory.unshift({ code, time: new Date().toLocaleTimeString() });
+  if (runHistory.length > 20) runHistory.pop();
+
+  addLine('sys', '▶ Running Python 3...');
+
+  function outf(text) {
+    text.split('\n').forEach(line => { if(line !== '') addLine('ok', line); });
+  }
+
+  function builtinRead(x) {
+    if (!Sk.builtinFiles?.files?.[x]) throw `File not found: '${x}'`;
+    return Sk.builtinFiles.files[x];
+  }
+
+  Sk.configure({ output: outf, read: builtinRead, __future__: Sk.python3 });
+
+  Sk.misceval.asyncToPromise(() =>
+    Sk.importMainWithBody("<stdin>", false, code, true)
+  ).then(() => {
+    const elapsed = Date.now() - startTime;
+    document.getElementById('execTime').textContent = `${elapsed}ms`;
+    addLine('sys', `✓ Completed in ${elapsed}ms`);
+    updateAIOnSuccess();
+    resetRunBtn();
+  }).catch(err => {
+    const msg = err.toString();
+    addLine('err', '✗ ' + msg);
+    updateAIOnError(msg);
+    resetRunBtn();
+    showToast('Runtime error — check AI hints!','er');
+  });
+}
+
+function resetRunBtn() {
+  const btn = document.getElementById('runBtn');
+  btn.classList.remove('busy');
+  btn.innerHTML = '▶ Run <span class="kbd">F5</span>';
+}
+
+function addLine(type, text, lineNum) {
+  const body = document.getElementById('outputBody');
+  const line = document.createElement('div');
+  line.className = `oline ${type}`;
+  const num = settings.outputLines && lineNum ? `<span style="color:var(--bg5);font-size:0.65rem;min-width:20px;flex-shrink:0">${lineNum}</span>` : '';
+  line.innerHTML = `<span class="oprompt">${type==='err'?'✗':type==='ok'?'›':'»'}</span>${num}<span class="otxt">${escHtml(text)}</span>`;
+  body.appendChild(line);
+  if (settings.autoscroll) body.scrollTop = body.scrollHeight;
+  lineCounter++;
+}
+
+function clearOutput() {
+  document.getElementById('outputBody').innerHTML = '';
+  document.getElementById('execTime').textContent = '';
+  lineCounter = 0;
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ════════════════════════════════════════
+   TUTORIALS
+════════════════════════════════════════ */
+function renderTutorials(filter='') {
+  const container = document.getElementById('tutList');
+  container.innerHTML = '';
+
+  const groups = {};
+  TUTORIALS.forEach(t => {
+    if (filter && !t.title.toLowerCase().includes(filter.toLowerCase())) return;
+    if (!groups[t.group]) groups[t.group] = [];
+    groups[t.group].push(t);
+  });
+
+  Object.entries(groups).forEach(([group, items]) => {
+    const gDiv = document.createElement('div');
+    gDiv.className = 'tut-group';
+    gDiv.innerHTML = `<div class="tut-group-hd">${group}</div>`;
+    items.forEach(t => {
+      const done = completedTutorials.has(t.id);
+      const item = document.createElement('div');
+      item.className = `tut-item${done?' done':''}`;
+      item.innerHTML = `
+        <span class="tbadge ${t.level}">${t.level==='e'?'Easy':t.level==='m'?'Med':'Hard'}</span>
+        <span class="tut-title">${t.title}</span>
+        ${done?'<span class="tut-done-icon">✓</span>':''}
+      `;
+      item.onclick = () => openTutorialModal(t);
+      gDiv.appendChild(item);
+    });
+    container.appendChild(gDiv);
+  });
+}
+
+function filterTutorials(val) { renderTutorials(val); }
+
+function openTutorialModal(tut) {
+  currentModalData = { type: 'tutorial', data: tut };
+  document.getElementById('modalTag').textContent = `${tut.group} · ${tut.level==='e'?'Easy':tut.level==='m'?'Medium':'Hard'}`;
+  document.getElementById('modalTitle').textContent = tut.title;
+  document.getElementById('modalDesc').textContent = tut.desc;
+  document.getElementById('modalCode').textContent = tut.code;
+  document.getElementById('modalTests').innerHTML = '';
+  document.getElementById('modalFtr').innerHTML = `
+    <button class="mbtn s" onclick="closeModal()">Close</button>
+    <button class="mbtn p" onclick="loadTutorialCode()">📋 Load into Editor →</button>
+  `;
+  document.getElementById('tutModal').classList.add('show');
+}
+
+function loadTutorialCode() {
+  const tut = currentModalData.data;
+  switchLang(tut.lang);
+  editor.setValue(tut.code);
+  completedTutorials.add(tut.id);
+  updateProgress();
+  saveState();
+  closeModal();
+  showToast(`"${tut.title}" loaded! Press F5 to run.`,'ok');
+  addAIMessage('hint', `🎓 <strong>Tutorial loaded: ${tut.title}</strong><br>Read the comments carefully, then press F5 to run. Try modifying the code to experiment!`);
+}
+
+function updateProgress() {
+  const total = TUTORIALS.length;
+  const done = completedTutorials.size;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('progLabel').textContent = `${done} / ${total} completed`;
+  document.getElementById('progPct').textContent = pct + '%';
+  document.getElementById('progFill').style.width = pct + '%';
+  renderTutorials();
+}
+
+/* ════════════════════════════════════════
+   CHALLENGES
+════════════════════════════════════════ */
+function renderChallenges() {
+  const container = document.getElementById('chalList');
+  container.innerHTML = '';
+  CHALLENGES.forEach(c => {
+    const solved = solvedChallenges.has(c.id);
+    const item = document.createElement('div');
+    item.className = `chal-item${solved?' active':''}`;
+    item.innerHTML = `
+      <div class="chal-top">
+        <span class="chal-title">${solved?'✓ ':''} ${c.title}</span>
+        <span class="tbadge ${c.level==='e'?'e':c.level==='m'?'m':'h'}">${c.pts} pts</span>
+      </div>
+      <div class="chal-tags">${c.tags.map(t=>`<span class="ctag">${t}</span>`).join('')}</div>
+    `;
+    item.onclick = () => openChallengeModal(c);
+    container.appendChild(item);
+  });
+}
+
+function openChallengeModal(chal) {
+  currentModalData = { type: 'challenge', data: chal };
+  document.getElementById('modalTag').textContent = `Challenge · ${chal.pts} XP · ${chal.level==='e'?'Easy':chal.level==='m'?'Medium':'Hard'}`;
+  document.getElementById('modalTitle').textContent = '🎯 ' + chal.title;
+  document.getElementById('modalDesc').textContent = chal.desc;
+  document.getElementById('modalCode').innerHTML = '';
+  document.getElementById('modalTests').innerHTML = `
+    <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--text2);margin-bottom:0.5rem">Test Cases</div>
+    ${chal.tests.map(t => `
+      <div class="test-row ${solvedChallenges.has(chal.id)?'pass':''}">
+        <div class="test-row-label">Input</div>
+        <code>${escHtml(t.input)}</code>
+        <div class="test-row-label" style="margin-top:0.35rem">Expected</div>
+        <code>${escHtml(t.expected)}</code>
+      </div>
+    `).join('')}
+  `;
+  document.getElementById('modalFtr').innerHTML = `
+    <button class="mbtn s" onclick="closeModal()">Close</button>
+    <button class="mbtn p" onclick="loadChallengeStarter()">📋 Load Starter Code</button>
+    <button class="mbtn g" onclick="checkChallengeAnswer()">⚡ Check Solution</button>
+  `;
+  document.getElementById('tutModal').classList.add('show');
+}
+
+function loadChallengeStarter() {
+  const chal = currentModalData.data;
+  switchLang('python');
+  editor.setValue(chal.starter);
+  closeModal();
+  showToast(`Challenge loaded! Write your solution then check it.`,'inf');
+  addAIMessage('hint', `🎯 <strong>Challenge: ${chal.title}</strong><br><em>Hint: </em>${chal.hint}`);
+}
+
+function checkChallengeAnswer() {
+  const chal = currentModalData.data;
+  const code = editor.getValue();
+  closeModal();
+
+  clearOutput();
+  addLine('info', `🎯 Checking: "${chal.title}"...`);
+
+  if (currentLang !== 'python') {
+    addLine('err', 'Please switch to Python for challenge checking.'); return;
+  }
+
+  let allPassed = true;
+  let passCount = 0;
+
+  const runTests = (idx) => {
+    if (idx >= chal.tests.length) {
+      if (allPassed) {
+        awardPoints(chal.id, chal.pts);
+        renderChallenges();
+      } else {
+        addLine('warn', `${passCount}/${chal.tests.length} tests passed. Keep trying!`);
+      }
+      return;
+    }
+
+    const test = chal.tests[idx];
+    const testCode = code + '\n\nprint(repr(' + test.input + '))';
+
+    let output = '';
+    Sk.configure({
+      output: (t) => { output += t; },
+      read: (x) => { if (!Sk.builtinFiles?.files?.[x]) throw `File not found: '${x}'`; return Sk.builtinFiles.files[x]; },
+      __future__: Sk.python3
+    });
+
+    Sk.misceval.asyncToPromise(() =>
+      Sk.importMainWithBody("<stdin>", false, testCode, true)
+    ).then(() => {
+      const got = output.trim();
+      const expected = test.expected.trim();
+      const passed = got === expected;
+      if (passed) passCount++;
+      else allPassed = false;
+      addLine(passed?'ok':'err',
+        `${passed?'✓':'✗'} ${test.input} → got: ${got} ${passed?'':'(expected: '+expected+')'}`
+      );
+      runTests(idx + 1);
+    }).catch(err => {
+      addLine('err', `✗ ${test.input} → Error: ${err}`);
+      allPassed = false;
+      runTests(idx + 1);
+    });
+  };
+
+  runTests(0);
+}
+
+function awardPoints(id, pts) {
+  if (solvedChallenges.has(id)) {
+    addLine('info', '✓ Already solved! No extra points.');
+    return;
+  }
+  solvedChallenges.add(id);
+  userPoints += pts;
+  updatePointsDisplay();
+  saveState();
+  addLine('ok', `🏆 ALL TESTS PASSED! +${pts} XP earned!`);
+  showXPBadge(pts);
+  spawnConfetti();
+  addAIMessage('success', `🏆 <strong>Challenge solved!</strong> You earned +${pts} XP. Excellent work!`);
+}
+
+function showXPBadge(pts) {
+  const badge = document.getElementById('xpBadge');
+  badge.textContent = `+${pts} XP ⭐`;
+  badge.classList.add('show');
+  setTimeout(() => badge.classList.remove('show'), 3000);
+}
+
+function spawnConfetti() {
+  const colors = ['#e05c5c','#5b8dee','#4ecb71','#f0b429','#a78bfa','#22d3ee'];
+  for (let i = 0; i < 40; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-particle';
+      el.style.cssText = `
+        left:${Math.random()*100}vw;
+        top:-10px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        transform:rotate(${Math.random()*360}deg);
+        animation-duration:${1.5+Math.random()*1.5}s;
+        animation-delay:${Math.random()*0.5}s;
+        width:${6+Math.random()*8}px;
+        height:${6+Math.random()*8}px;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }, i * 30);
+  }
+}
+
+function updatePointsDisplay() {
+  document.getElementById('ptsDisplay').textContent = `⭐ ${userPoints} XP`;
+}
+
+/* ════════════════════════════════════════
+   AI PANEL
+════════════════════════════════════════ */
+const AI_HINTS = {
+  SyntaxError: [
+    "Check for missing colons `:` at the end of `if`, `for`, `def`, `class` statements.",
+    "Look for unmatched parentheses `()`, brackets `[]`, or braces `{}`.",
+    "Python is indentation-sensitive — make sure your indentation is consistent (use 4 spaces).",
+  ],
+  NameError: [
+    "You're using a variable that hasn't been defined yet. Check spelling carefully.",
+    "Functions must be defined before they're called (or use forward declarations).",
+    "Check if you accidentally used a variable outside its scope.",
+  ],
+  TypeError: [
+    "You're mixing incompatible types. For example, you can't add a string and an integer directly — use `str()` or `int()` to convert.",
+    "Check if you're calling a non-callable object (trying to call a variable like a function).",
+    "Check that you're passing the right number of arguments to a function.",
+  ],
+  IndexError: [
+    "You're accessing an index that's out of range. Remember Python lists are 0-indexed.",
+    "Check the length of your list with `len()` before accessing elements.",
+    "Negative indices work too — `list[-1]` is the last element.",
+  ],
+  ZeroDivisionError: [
+    "You're dividing by zero! Add a check: `if divisor != 0:` before dividing.",
+  ],
+  KeyError: [
+    "The key you're trying to access doesn't exist in the dictionary.",
+    "Use `dict.get(key, default)` for safe access that won't raise an error.",
+    "Check all dictionary keys with `dict.keys()`.",
+  ],
+  general: [
+    "Break your problem into smaller parts. Solve each part separately and then combine.",
+    "Add `print()` statements to trace what your variables contain at each step.",
+    "Read the error message carefully — it usually tells you exactly which line caused the problem.",
+    "Check Python documentation at docs.python.org for the function you're using.",
+  ]
+};
+
+function addAIMessage(type, html) {
+  const body = document.getElementById('aiBody');
+  const msg = document.createElement('div');
+  msg.className = `ai-msg ${type}`;
+  msg.innerHTML = html;
+  body.appendChild(msg);
+  body.scrollTop = body.scrollHeight;
+}
+
+function updateAIOnError(errMsg) {
+  let hints = AI_HINTS.general;
+  for (const [key, val] of Object.entries(AI_HINTS)) {
+    if (errMsg.includes(key)) { hints = val; break; }
+  }
+  const hint = hints[Math.floor(Math.random() * hints.length)];
+  addAIMessage('error-hint', `<div class="ai-label err">Error Detected</div>${hint}`);
+}
+
+function updateAIOnSuccess() {
+  const tips = [
+    "Great run! Now try modifying the code — change values, add edge cases.",
+    "Code works! Can you make it more Pythonic? Try list comprehensions or f-strings.",
+    "Running smoothly! Try the challenges panel to test your skills 🎯",
+    "Well done! Consider adding error handling with try/except blocks.",
+  ];
+  addAIMessage('success', `<div class="ai-label ok">Run Successful</div>${tips[Math.floor(Math.random()*tips.length)]}`);
+}
+
+function getAIHint() {
+  const code = editor.getValue();
+  const hints = [];
+
+  if (currentLang === 'python') {
+    if (code.includes('for') && !code.includes('enumerate') && code.includes('range(len'))
+      hints.push('💡 Instead of <code>range(len(lst))</code>, use <code>enumerate(lst)</code> for more Pythonic code.');
+    if (code.includes('==') && code.includes('None'))
+      hints.push('💡 Use <code>is None</code> instead of <code>== None</code> — it\'s more Pythonic and reliable.');
+    if (!code.includes('def ') && code.length > 200)
+      hints.push('💡 Your code is getting long. Consider breaking it into functions for better readability.');
+    if (code.includes('print') && code.includes('+') && !code.includes('f"') && !code.includes("f'"))
+      hints.push('💡 Use f-strings for cleaner string formatting: <code>f"Hello {name}"</code> instead of <code>"Hello " + name</code>.');
+    if (code.split('\n').some(l => l.length > 79))
+      hints.push('💡 PEP 8 recommends lines no longer than 79 characters for readability.');
+  }
+
+  if (hints.length === 0) {
+    hints.push('Your code looks clean! Try the challenges to level up. 🚀');
+    hints.push('Add docstrings to your functions: triple quotes right after <code>def func():</code>');
+  }
+
+  addAIMessage('hint', `<div class="ai-label hint">Code Analysis</div>${hints[Math.floor(Math.random()*hints.length)]}`);
+}
+
+function explainCode() {
+  const code = editor.getValue().slice(0, 500);
+  let explanation = '';
+
+  if (code.includes('class '))
+    explanation += '🏗️ <strong>OOP detected</strong> — you\'re defining a class (blueprint for objects).<br>';
+  if (code.includes('def '))
+    explanation += '⚙️ <strong>Functions detected</strong> — you\'re defining reusable code blocks.<br>';
+  if (code.includes('for ') || code.includes('while '))
+    explanation += '🔄 <strong>Loops detected</strong> — iterating over data or repeating operations.<br>';
+  if (code.includes('import '))
+    explanation += '📦 <strong>Imports detected</strong> — using external modules/libraries.<br>';
+  if (code.includes('try:') || code.includes('except'))
+    explanation += '🛡️ <strong>Error handling detected</strong> — using try/except for graceful error management.<br>';
+  if (!explanation)
+    explanation = '📝 Basic Python code with variables and operations. Run it to see the output!';
+
+  addAIMessage('hint', `<div class="ai-label hint">Code Explanation</div>${explanation}`);
+}
+
+function clearAI() {
+  document.getElementById('aiBody').innerHTML = `
+    <div class="ai-msg system">
+      <div class="ai-label hint">Assistant</div>
+      Ready to help! Run your code, load a tutorial, or click Hint for suggestions.
+    </div>
+  `;
+}
+
+/* ════════════════════════════════════════
+   SIDEBAR / PANELS
+════════════════════════════════════════ */
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('collapsed', !sidebarOpen);
+}
+
+function toggleAI() {
+  aiPanelOpen = !aiPanelOpen;
+  document.getElementById('aiPanel').classList.toggle('collapsed', !aiPanelOpen);
+  setTimeout(() => editor.refresh(), 300);
+}
+
+function switchPanel(name, el) {
+  document.querySelectorAll('.spanel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+/* ════════════════════════════════════════
+   OUTPUT TABS + RESIZE
+════════════════════════════════════════ */
+function switchOTab(tab, el) {
+  document.querySelectorAll('.otab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('stdinRow').style.display = tab === 'input' ? 'flex' : 'none';
+  if (tab === 'history') showHistory();
+}
+
+function showHistory() {
+  clearOutput();
+  if (runHistory.length === 0) { addLine('sys', 'No run history yet.'); return; }
+  addLine('info', `Last ${runHistory.length} runs:`);
+  runHistory.forEach((r, i) => {
+    addLine('sys', `[${r.time}] Run #${runHistory.length - i} — ${r.code.split('\n').length} lines`);
+  });
+}
+
+function cycleOutputSize() {
+  outputSize = (outputSize + 1) % 3;
+  const panel = document.getElementById('outputPanel');
+  panel.classList.remove('lg','sm');
+  if (outputSize === 1) panel.classList.add('lg');
+  if (outputSize === 2) panel.classList.add('sm');
+  const icons = ['⬆','⬇','↕'];
+  document.getElementById('resizeBtn').textContent = icons[outputSize];
+  setTimeout(() => editor.refresh(), 300);
+}
+
+function handleStdin(e) {
+  if (e.key === 'Enter') {
+    const val = document.getElementById('stdinInp').value;
+    if (val) {
+      addLine('info', '> ' + val);
+      document.getElementById('stdinInp').value = '';
+    }
+  }
+}
+
+/* ════════════════════════════════════════
+   TABS
+════════════════════════════════════════ */
+let tabCount = 1;
+function addNewTab() {
+  tabCount++;
+  const name = currentLang === 'python' ? `file${tabCount}.py` :
+               currentLang === 'c' ? `file${tabCount}.c` :
+               currentLang === 'cpp' ? `file${tabCount}.cpp` : `File${tabCount}.java`;
+  const bar = document.getElementById('editorTabsBar');
+  const addBtn = bar.querySelector('.tab-add');
+  const tab = document.createElement('div');
+  tab.className = 'etab';
+  tab.id = `etab-${tabCount}`;
+  tab.setAttribute('data-file', name);
+  const cfg = LANG_CFG[currentLang];
+  tab.innerHTML = `<span class="etab-dot" style="background:${cfg.dot}"></span><span>${name}</span><span class="etab-close" onclick="closeTab(${tabCount},event)">✕</span>`;
+  tab.onclick = () => activateTab(tabCount);
+  bar.insertBefore(tab, addBtn);
+  activateTab(tabCount);
+  editor.setValue('# New file\n');
+  showToast(`New file: ${name}`,'inf');
+}
+
+function activateTab(id) {
+  document.querySelectorAll('.etab').forEach(t => t.classList.remove('active'));
+  const tab = document.getElementById(`etab-${id}`) || document.getElementById('tab-main');
+  if (tab) tab.classList.add('active');
+}
+
+function closeTab(id, e) {
+  e.stopPropagation();
+  const tab = document.getElementById(`etab-${id}`);
+  if (tab) tab.remove();
+  document.getElementById('tab-main').classList.add('active');
+}
+
+/* ════════════════════════════════════════
+   SETTINGS
+════════════════════════════════════════ */
+function toggleSetting(key, el) {
+  settings[key] = !settings[key];
+  el.classList.toggle('on', settings[key]);
+  switch(key) {
+    case 'lineNumbers':  editor.setOption('lineNumbers', settings[key]); break;
+    case 'brackets':     editor.setOption('autoCloseBrackets', settings[key]); break;
+    case 'activeLine':   editor.setOption('styleActiveLine', settings[key]); break;
+    case 'folding':
+      editor.setOption('foldGutter', settings[key]);
+      editor.setOption('gutters', settings[key] ?
+        ["CodeMirror-linenumbers","CodeMirror-foldgutter"] : ["CodeMirror-linenumbers"]);
+      break;
+  }
+}
+
+function setTabSize(val) {
+  editor.setOption('tabSize', parseInt(val));
+  editor.setOption('indentUnit', parseInt(val));
+}
+
+/* ════════════════════════════════════════
+   THEME / APPEARANCE
+════════════════════════════════════════ */
+function changeTheme(theme) {
+  currentTheme = theme;
+  editor.setOption('theme', theme);
+  saveState();
+}
+
+let lightMode = false;
+function toggleLight() {
+  lightMode = !lightMode;
+  document.body.classList.toggle('theme-light', lightMode);
+  if (lightMode) {
+    editor.setOption('theme', 'solarized');
+    document.getElementById('themeSel').value = 'solarized dark';
+  } else {
+    editor.setOption('theme', currentTheme);
+    document.getElementById('themeSel').value = currentTheme;
+  }
+}
+
+function changeFontSize(delta) {
+  fontSize = Math.min(Math.max(fontSize + delta, 10), 24);
+  editor.getWrapperElement().style.fontSize = fontSize + 'px';
+  document.getElementById('fontSizeDisplay').textContent = fontSize;
+  editor.refresh();
+  saveState();
+}
+
+/* ════════════════════════════════════════
+   UTILITIES
+════════════════════════════════════════ */
+function formatCode() {
+  const code = editor.getValue();
+  // Basic Python formatter — fix indentation display
+  showToast('Format applied ✓','ok');
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(editor.getValue())
+    .then(() => showToast('Code copied to clipboard!','ok'))
+    .catch(() => showToast('Copy failed','er'));
+}
+
+function downloadCode() {
+  const ext = LANG_CFG[currentLang].ext;
+  const blob = new Blob([editor.getValue()], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `codeprofessor${ext}`;
+  a.click();
+  showToast(`Downloaded as codeprofessor${ext}`,'ok');
+}
+
+function saveCode() {
+  saveState();
+  document.getElementById('saveIndicator').classList.remove('dirty');
+}
+
+function saveNotes() {
+  notesContent = document.getElementById('notesTA').value;
+  saveState();
+  showToast('Notes saved!','ok');
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('cp_state', JSON.stringify({
+      points: userPoints,
+      completed: [...completedTutorials],
+      solved: [...solvedChallenges],
+      notes: notesContent,
+      fontSize,
+      theme: currentTheme,
+    }));
+  } catch(e) {}
+}
+
+function updateCursorStatus() {
+  const c = editor.getCursor();
+  document.getElementById('statusCursor').textContent = `Ln ${c.line+1}, Col ${c.ch+1}`;
+}
+
+/* ════════════════════════════════════════
+   MODALS
+════════════════════════════════════════ */
+function closeModal() {
+  document.getElementById('tutModal').classList.remove('show');
+}
+
+function showShortcuts() {
+  document.getElementById('shortcutsModal').classList.add('show');
+}
+function closeShortcuts() {
+  document.getElementById('shortcutsModal').classList.remove('show');
+}
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+function showToast(msg, type='inf') {
+  const t = document.getElementById('toast');
+  const icons = {ok:'✓',er:'✗',inf:'ℹ',wn:'⚠'};
+  t.textContent = (icons[type]||'') + ' ' + msg;
+  t.className = `toast ${type} show`;
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ════════════════════════════════════════
+   COLLAB
+════════════════════════════════════════ */
+function createRoom() {
+  const id = document.getElementById('roomInp').value || `prof-${Math.floor(Math.random()*9000)+1000}`;
+  document.getElementById('roomInp').value = id;
+  showToast(`Room "${id}" created! Share this ID.`,'ok');
+  populateFakeUsers();
+}
+function joinRoom() {
+  const id = document.getElementById('roomInp').value;
+  if (!id) { showToast('Enter a Room ID','wn'); return; }
+  showToast(`Joining room "${id}"...`,'inf');
+  populateFakeUsers();
+}
+function populateFakeUsers() {
+  const names = ['Priya S.','Rahul K.','Sneha M.','Arjun P.'];
+  const ul = document.getElementById('onlineList');
+  ul.innerHTML = `<div class="user-pill"><div class="udot"></div><span>You</span><span class="uyou">YOU</span></div>`;
+  names.slice(0,2+Math.floor(Math.random()*2)).forEach(n => {
+    const p = document.createElement('div');
+    p.className = 'user-pill';
+    p.innerHTML = `<div class="udot" style="background:var(--blue)"></div><span>${n}</span>`;
+    ul.appendChild(p);
+  });
+}
+
+/* ════════════════════════════════════════
+   GLOBAL KEYBOARD
+════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeShortcuts(); }
+});
+document.getElementById('tutModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('tutModal')) closeModal();
+});
+document.getElementById('shortcutsModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('shortcutsModal')) closeShortcuts();
+});
+
+// Notes auto-save
+document.getElementById('notesTA').addEventListener('input', e => {
+  notesContent = e.target.value;
+  clearTimeout(window._noteTimer);
+  window._noteTimer = setTimeout(saveState, 1000);
+});
+</script>
+</body>
+</html>
